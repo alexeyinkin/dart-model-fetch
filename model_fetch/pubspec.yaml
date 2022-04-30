@@ -1,0 +1,10 @@
+name: model_fetch
+description: A lazy load BLoC wrapper for your data source.
+version: 0.1.0
+homepage: https://github.com/alexeyinkin/dart-model-fetch
+
+environment:
+  sdk: '>=2.12.0 <3.0.0'
+
+dependencies:
+  rxdart: ^0.27.3
