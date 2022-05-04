@@ -12,9 +12,9 @@ abstract class FirestoreLazyLoadBloc<T> extends LazyLoadBloc<T> {
     int? totalLimit,
     List<AbstractClientFilter<T>> clientFilters = const [],
   }) : super(
-    totalLimit: totalLimit,
-    clientFilters: clientFilters,
-  );
+          totalLimit: totalLimit,
+          clientFilters: clientFilters,
+        );
 
   Query<T> getStartAtQuery() {
     return _lastDocument == null

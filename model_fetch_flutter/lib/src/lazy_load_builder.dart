@@ -5,8 +5,11 @@ class LazyLoadBuilder<T> extends StatelessWidget {
   final LazyLoadBloc<T> bloc;
   final Widget Function(BuildContext context, LazyLoadState<T> state) builder;
 
-  LazyLoadBuilder({Key? key, required this.bloc, required this.builder})
-      : super(key: key);
+  LazyLoadBuilder({
+    Key? key,
+    required this.bloc,
+    required this.builder,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

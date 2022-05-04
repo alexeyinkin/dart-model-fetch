@@ -1,50 +1,48 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:model_fetch/model_fetch.dart';
+
 import 'firestore_lazy_load_bloc.dart';
 
 class FirestoreFrozenLazyLoadBloc<T> extends FirestoreLazyLoadBloc<T> {
   final int fetchSize;
   final _objects = <T>[];
-  var _hasMore = true;
-  var _status = LazyLoadStatus.notTried;
+  bool _hasMore = true;
+  LoadStatus _status = LoadStatus.notTried;
 
   bool get hasMore => _hasMore;
-  LazyLoadStatus get status => _status;
+
+  LoadStatus get status => _status;
 
   FirestoreFrozenLazyLoadBloc({
     required Query<T> query,
     required this.fetchSize,
     int? totalLimit,
     List<AbstractClientFilter<T>> clientFilters = const [],
-  }) :
-      super(
-        query: query,
-        totalLimit: totalLimit,
-        clientFilters: clientFilters,
-      )
-  ;
+  }) : super(
+          query: query,
+          totalLimit: totalLimit,
+          clientFilters: clientFilters,
+        );
 
   Future<void> loadMoreIfCan() async {
-    if (_status == LazyLoadStatus.loading) return;
+    if (_status == LoadStatus.loading) return;
     if (_hasMore) return _pushLoadingAndLoadMore();
   }
 
   Future<void> _pushLoadingAndLoadMore() async {
-    _status = LazyLoadStatus.loading;
+    _status = LoadStatus.loading;
     pushOutput();
     await _loadMore();
   }
 
   Future<void> _loadMore() async {
-    _status = LazyLoadStatus.loading;
+    _status = LoadStatus.loading;
     try {
-      final snapshot = await getStartAtQuery()
-          .limit(fetchSize)
-          .get();
+      final snapshot = await getStartAtQuery().limit(fetchSize).get();
       _addQuerySnapshotToList(snapshot);
 
       if (snapshot.docs.length < fetchSize) _hasMore = false;
-      _status = LazyLoadStatus.ok;
+      _status = LoadStatus.ok;
       pushOutput();
     } catch (error) {
       print(error.toString());
@@ -71,7 +69,7 @@ class FirestoreFrozenLazyLoadBloc<T> extends FirestoreLazyLoadBloc<T> {
 
   void _setErrorState() {
     _hasMore = false;
-    _status = LazyLoadStatus.error;
+    _status = LoadStatus.error;
     pushOutput();
   }
 
@@ -90,11 +88,11 @@ class FirestoreFrozenLazyLoadBloc<T> extends FirestoreLazyLoadBloc<T> {
   }
 
   void backgroundReloadFirstPage() {
-    if (_status == LazyLoadStatus.loading) return;
+    if (_status == LoadStatus.loading) return;
 
     _objects.clear();
     _hasMore = true;
-    _status = LazyLoadStatus.notTried;
+    _status = LoadStatus.notTried;
     setLastDocument(null);
     _loadMore();
   }

@@ -1,6 +1,7 @@
 import 'package:rxdart/rxdart.dart';
 
 import 'abstract_client_filter.dart';
+import 'load_status.dart';
 
 abstract class LazyLoadBloc<T> {
   final _statesController = BehaviorSubject<LazyLoadState<T>>();
@@ -10,7 +11,7 @@ abstract class LazyLoadBloc<T> {
   final initialState = LazyLoadState<T>(
     items: [],
     hasMore: true,
-    status: LazyLoadStatus.notTried,
+    status: LoadStatus.notTried,
   );
 
   final int? totalLimit;
@@ -56,20 +57,13 @@ abstract class LazyLoadBloc<T> {
 class LazyLoadState<T> {
   final List<T> items;
   final bool hasMore;
-  final LazyLoadStatus status;
+  final LoadStatus status;
 
-  bool get isTried => status != LazyLoadStatus.notTried;
+  bool get isTried => status != LoadStatus.notTried;
 
   LazyLoadState({
     required this.items,
     required this.hasMore,
     required this.status,
   });
-}
-
-enum LazyLoadStatus {
-  notTried,
-  loading,
-  ok,
-  error,
 }
