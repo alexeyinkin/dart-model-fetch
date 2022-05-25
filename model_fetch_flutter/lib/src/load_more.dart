@@ -15,9 +15,9 @@ class LoadMoreWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return VisibilityDetector(
-      key: ValueKey('LoadMoreWidget'),
-      child: child,
+      key: const ValueKey('LoadMoreWidget'),
       onVisibilityChanged: _onVisibilityChanged,
+      child: child,
     );
   }
 

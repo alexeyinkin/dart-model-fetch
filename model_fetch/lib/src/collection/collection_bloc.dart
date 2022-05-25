@@ -1,39 +1,38 @@
+import 'package:meta/meta.dart';
 import 'package:rxdart/rxdart.dart';
 
-import 'abstract_client_filter.dart';
-import 'load_status.dart';
+import '../abstract_client_filter.dart';
+import '../load_status.dart';
 
-abstract class LazyLoadBloc<T> {
-  final _statesController = BehaviorSubject<LazyLoadState<T>>();
+abstract class CollectionBloc<T> {
+  final _statesController = BehaviorSubject<CollectionState<T>>();
 
-  Stream<LazyLoadState<T>> get states => _statesController.stream;
+  Stream<CollectionState<T>> get states => _statesController.stream;
 
-  final initialState = LazyLoadState<T>(
+  final int? totalLimit;
+  final List<AbstractClientFilter<T>> clientFilters;
+
+  final initialState = CollectionState<T>(
     items: [],
     hasMore: true,
     status: LoadStatus.notTried,
   );
 
-  final int? totalLimit;
-  final List<AbstractClientFilter<T>> clientFilters;
-
-  LazyLoadBloc({
+  CollectionBloc({
     this.totalLimit,
     this.clientFilters = const [],
   });
-
-  Future<void> loadMoreIfCan();
 
   void pushOutput() {
     if (_statesController.isClosed) return;
     _statesController.add(_createStateBase());
   }
 
-  LazyLoadState<T> _createStateBase() {
-    LazyLoadState<T> state = createState();
+  CollectionState<T> _createStateBase() {
+    CollectionState<T> state = createState();
 
     if (totalLimit != null && state.items.length >= totalLimit!) {
-      state = LazyLoadState<T>(
+      state = CollectionState<T>(
         items: state.items.sublist(0, totalLimit),
         hasMore: false,
         status: state.status,
@@ -47,21 +46,22 @@ abstract class LazyLoadBloc<T> {
     return state;
   }
 
-  LazyLoadState<T> createState();
+  CollectionState<T> createState();
 
+  @mustCallSuper
   void dispose() {
     _statesController.close();
   }
 }
 
-class LazyLoadState<T> {
+class CollectionState<T> {
   final List<T> items;
   final bool hasMore;
   final LoadStatus status;
 
   bool get isTried => status != LoadStatus.notTried;
 
-  LazyLoadState({
+  CollectionState({
     required this.items,
     required this.hasMore,
     required this.status,

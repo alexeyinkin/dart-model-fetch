@@ -2,7 +2,7 @@ import 'package:meta/meta.dart';
 import 'package:model_interfaces/model_interfaces.dart';
 import 'package:rxdart/rxdart.dart';
 
-import 'load_status.dart';
+import '../load_status.dart';
 
 abstract class ModelByIdBloc<I, T extends WithId<I>> {
   final I id;

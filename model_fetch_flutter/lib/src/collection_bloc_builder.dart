@@ -1,11 +1,11 @@
 import 'package:flutter/widgets.dart';
 import 'package:model_fetch/model_fetch.dart';
 
-class LazyLoadBuilder<T> extends StatelessWidget {
-  final LazyLoadBloc<T> bloc;
-  final Widget Function(BuildContext context, LazyLoadState<T> state) builder;
+class CollectionBlocBuilder<T> extends StatelessWidget {
+  final CollectionBloc<T> bloc;
+  final Widget Function(BuildContext context, CollectionState<T> state) builder;
 
-  LazyLoadBuilder({
+  const CollectionBlocBuilder({
     Key? key,
     required this.bloc,
     required this.builder,
@@ -13,7 +13,7 @@ class LazyLoadBuilder<T> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder<LazyLoadState<T>>(
+    return StreamBuilder<CollectionState<T>>(
       stream: bloc.states,
       builder: (context, snapshot) =>
           builder(context, snapshot.data ?? bloc.initialState),

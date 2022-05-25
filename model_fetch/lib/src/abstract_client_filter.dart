@@ -1,5 +1,5 @@
-import 'lazy_load_bloc.dart';
+import 'collection/collection_bloc.dart';
 
 abstract class AbstractClientFilter<T> {
-  LazyLoadState<T> filter(LazyLoadState<T> state);
+  CollectionState<T> filter(CollectionState<T> state);
 }

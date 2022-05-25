@@ -24,6 +24,7 @@ class FirestoreFrozenLazyLoadBloc<T> extends FirestoreLazyLoadBloc<T> {
           clientFilters: clientFilters,
         );
 
+  @override
   Future<void> loadMoreIfCan() async {
     if (_status == LoadStatus.loading) return;
     if (_hasMore) return _pushLoadingAndLoadMore();
@@ -74,8 +75,8 @@ class FirestoreFrozenLazyLoadBloc<T> extends FirestoreLazyLoadBloc<T> {
   }
 
   @override
-  LazyLoadState<T> createState() {
-    return LazyLoadState<T>(
+  CollectionState<T> createState() {
+    return CollectionState<T>(
       items: _objects,
       hasMore: _hasMore,
       status: _status,
