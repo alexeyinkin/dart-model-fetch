@@ -1,3 +1,11 @@
+## 0.4.0
+
+* **BREAKING:** `FirestoreFrozenLazyLoadBloc.backgroundReloadFirstPage` is asynchronous.
+* **BREAKING:** Support and require `model_interfaces` v0.3.0.
+* Fixed linter issues.
+* Use `total_lints`.
+* Licensed under MIT-0.
+
 ## 0.3.0
 
 * Added `FirestoreLiveSingleDocumentCollectionBloc`.

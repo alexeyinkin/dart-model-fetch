@@ -6,10 +6,10 @@ class CollectionBlocBuilder<T> extends StatelessWidget {
   final Widget Function(BuildContext context, CollectionState<T> state) builder;
 
   const CollectionBlocBuilder({
-    Key? key,
+    super.key,
     required this.bloc,
     required this.builder,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

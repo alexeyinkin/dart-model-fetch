@@ -11,9 +11,8 @@ class FirestoreLiveByIdBloc<T extends WithId<String>>
 
   FirestoreLiveByIdBloc({
     required this.collectionReference,
-    required String id,
-  })  : _doc = collectionReference.doc(id),
-        super(id: id) {
+    required super.id,
+  }) : _doc = collectionReference.doc(id) {
     _doc.snapshots().listen(_onModelChanged);
   }
 

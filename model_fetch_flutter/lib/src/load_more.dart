@@ -7,10 +7,10 @@ class LoadMoreWidget extends StatelessWidget {
   final Widget child;
 
   const LoadMoreWidget({
-    Key? key,
+    super.key,
     required this.bloc,
     required this.child,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -21,9 +21,9 @@ class LoadMoreWidget extends StatelessWidget {
     );
   }
 
-  void _onVisibilityChanged(VisibilityInfo info) {
+  Future<void> _onVisibilityChanged(VisibilityInfo info) async {
     if (info.visibleFraction > .01) {
-      bloc.loadMoreIfCan();
+      await bloc.loadMoreIfCan();
     }
   }
 }

@@ -49,8 +49,8 @@ abstract class CollectionBloc<T> {
   CollectionState<T> createState();
 
   @mustCallSuper
-  void dispose() {
-    _statesController.close();
+  Future<void> dispose() async {
+    await _statesController.close();
   }
 }
 

@@ -1,3 +1,10 @@
+## 0.4.0
+
+* **BREAKING:** `CollectionBloc.dispose` and `ModelByIdBloc.dispose` are asynchronous.
+* **BREAKING:** Support and require `model_interfaces` v0.3.0.
+* Use `total_lints`.
+* Licensed under MIT-0.
+
 ## 0.3.0
 
 * **BREAKING**: Renamed `LazyLoadState` to `CollectionState`.

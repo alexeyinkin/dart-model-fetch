@@ -61,8 +61,8 @@ class FirestoreLiveSingleDocumentCollectionBloc<T extends WithId<String>>
   }
 
   @override
-  void dispose() {
-    _snapshotSubscription?.cancel();
-    super.dispose();
+  Future<void> dispose() async {
+    await _snapshotSubscription?.cancel();
+    await super.dispose();
   }
 }

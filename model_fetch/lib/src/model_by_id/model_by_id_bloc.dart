@@ -40,8 +40,8 @@ abstract class ModelByIdBloc<I, T extends WithId<I>> {
     _state = state;
   }
 
-  void dispose() {
-    _statesController.close();
+  Future<void> dispose() async {
+    await _statesController.close();
   }
 }
 
