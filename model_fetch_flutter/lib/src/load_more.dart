@@ -2,10 +2,12 @@ import 'package:flutter/widgets.dart';
 import 'package:model_fetch/model_fetch.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 
+@Deprecated('Use BlocAutoLoadMoreWidget')
 class LoadMoreWidget extends StatelessWidget {
   final LazyLoadBloc bloc;
   final Widget child;
 
+  @Deprecated('Use BlocAutoLoadMoreWidget')
   const LoadMoreWidget({
     super.key,
     required this.bloc,

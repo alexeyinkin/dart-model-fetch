@@ -1,3 +1,8 @@
+## 0.5.1
+
+* Added `BlocAutoLoadMoreWidget`, `LazyLoadBlocTrailingWidget`.
+* Deprecated `LoadMoreWidget`.
+
 ## 0.5.0
 
 * Support and require `model_fetch` v0.5.*
