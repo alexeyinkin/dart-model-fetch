@@ -4,7 +4,7 @@ import 'package:model_fetch/model_fetch.dart';
 import 'firestore_lazy_load_bloc.dart';
 
 class FirestoreFrozenLazyLoadBloc<T> extends FirestoreLazyLoadBloc<T> {
-  final int fetchSize;
+  final int pageSize;
   final _objects = <T>[];
   bool _hasMore = true;
   LoadStatus _status = LoadStatus.notTried;
@@ -14,10 +14,10 @@ class FirestoreFrozenLazyLoadBloc<T> extends FirestoreLazyLoadBloc<T> {
   LoadStatus get status => _status;
 
   FirestoreFrozenLazyLoadBloc({
+    required this.pageSize,
     required super.query,
-    required this.fetchSize,
-    super.totalLimit,
     super.clientFilters,
+    super.totalLimit,
   });
 
   @override
@@ -35,10 +35,10 @@ class FirestoreFrozenLazyLoadBloc<T> extends FirestoreLazyLoadBloc<T> {
   Future<void> _loadMore() async {
     _status = LoadStatus.loading;
     try {
-      final snapshot = await getStartAtQuery().limit(fetchSize).get();
+      final snapshot = await getStartAtQuery().limit(pageSize).get();
       _addQuerySnapshotToList(snapshot);
 
-      if (snapshot.docs.length < fetchSize) _hasMore = false;
+      if (snapshot.docs.length < pageSize) _hasMore = false;
       _status = LoadStatus.ok;
       pushOutput();
     } catch (error) {

@@ -1,3 +1,8 @@
+## 0.5.0
+
+* **BREAKING:** Renamed `FirestoreFrozenLazyLoadBloc.fetchSize` to `pageSize`.
+* Add `AbstractFirestoreLoaderFactory`.
+
 ## 0.4.0
 
 * **BREAKING:** `FirestoreFrozenLazyLoadBloc.backgroundReloadFirstPage` is asynchronous.

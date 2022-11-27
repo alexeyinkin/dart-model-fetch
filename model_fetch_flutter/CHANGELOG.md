@@ -1,6 +1,10 @@
+## 0.5.0
+
+* Support and require `model_fetch` v0.5.*
+
 ## 0.4.0
 
-* **BREAKING:** Support and require `model_interfaces` v0.3.0.
+* **BREAKING:** Support and require `model_interfaces` v0.3.*
 * Fixed linter issues.
 * Use `total_lints`.
 * Licensed under MIT-0.

@@ -1,3 +1,7 @@
+## 0.5.0
+
+* Added `AbstractFilter.pageSize`.
+
 ## 0.4.0
 
 * **BREAKING:** `CollectionBloc.dispose` and `ModelByIdBloc.dispose` are asynchronous.
