@@ -4,12 +4,14 @@ import 'package:rxdart/rxdart.dart';
 import '../abstract_client_filter.dart';
 import '../load_status.dart';
 
+typedef OnError = void Function(Object error, StackTrace trace);
+
 abstract class CollectionBloc<T> {
   final _statesController = BehaviorSubject<CollectionState<T>>();
 
   Stream<CollectionState<T>> get states => _statesController.stream;
 
-  final void Function(Object error) onError;
+  final OnError? _onError;
 
   final int? totalLimit;
   final List<AbstractClientFilter<T>> clientFilters;
@@ -21,10 +23,10 @@ abstract class CollectionBloc<T> {
   );
 
   CollectionBloc({
-    required this.onError,
     this.clientFilters = const [],
+    OnError? onError,
     this.totalLimit,
-  });
+  }) : _onError = onError;
 
   void pushOutput() {
     if (_statesController.isClosed) return;
@@ -50,6 +52,15 @@ abstract class CollectionBloc<T> {
   }
 
   CollectionState<T> createState();
+
+  void onError(Object error, StackTrace trace) {
+    (_onError ?? _defaultOnError)(error, trace);
+  }
+
+  void _defaultOnError(Object error, StackTrace trace) {
+    print(error);
+    print(trace);
+  }
 
   @mustCallSuper
   Future<void> dispose() async {

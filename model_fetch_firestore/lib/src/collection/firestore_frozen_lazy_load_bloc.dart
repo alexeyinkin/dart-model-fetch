@@ -14,10 +14,10 @@ class FirestoreFrozenLazyLoadBloc<T> extends FirestoreLazyLoadBloc<T> {
   LoadStatus get status => _status;
 
   FirestoreFrozenLazyLoadBloc({
-    required super.onError,
     required this.pageSize,
     required super.query,
     super.clientFilters,
+    super.onError,
     super.totalLimit,
   });
 
@@ -42,8 +42,10 @@ class FirestoreFrozenLazyLoadBloc<T> extends FirestoreLazyLoadBloc<T> {
       if (snapshot.docs.length < pageSize) _hasMore = false;
       _status = LoadStatus.ok;
       pushOutput();
-    } catch (error) {
-      onError(error);
+
+      // ignore: avoid_catches_without_on_clauses
+    } catch (error, trace) {
+      onError(error, trace);
       _setErrorState();
     }
   }

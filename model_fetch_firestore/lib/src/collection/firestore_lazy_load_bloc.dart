@@ -8,9 +8,9 @@ abstract class FirestoreLazyLoadBloc<T> extends LazyLoadBloc<T> {
   DocumentSnapshot<T>? _lastDocument;
 
   FirestoreLazyLoadBloc({
-    required super.onError,
     required this.query,
     super.clientFilters,
+    super.onError,
     super.totalLimit,
   });
 

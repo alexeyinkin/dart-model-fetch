@@ -1,3 +1,11 @@
+## 0.5.2
+
+* Downgrade the Dart SDK upper limit to `<3.0.0` from `<4.0.0` because of incomplete support by pub.dev.
+
+## 0.5.1
+
+* Added `CollectionBloc.onError`, `LazyLoadBloc.onError`.
+
 ## 0.5.0
 
 * Added `AbstractFilter.pageSize`.

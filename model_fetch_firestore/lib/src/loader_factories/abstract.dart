@@ -19,7 +19,7 @@ abstract class AbstractFirestoreLoaderFactory<T extends WithId<String>,
     SnapshotOptions? options,
   );
 
-  void onError(Object error);
+  void onError(Object error, StackTrace trace);
 
   T fromFirestoreBase(
     DocumentSnapshot<Map<String, dynamic>> snapshot,
@@ -27,8 +27,10 @@ abstract class AbstractFirestoreLoaderFactory<T extends WithId<String>,
   ) {
     try {
       return fromFirestore(snapshot, options);
-    } catch (e) {
-      onError(e);
+
+      // ignore: avoid_catches_without_on_clauses
+    } catch (error, trace) {
+      onError(error, trace);
       rethrow;
     }
   }
