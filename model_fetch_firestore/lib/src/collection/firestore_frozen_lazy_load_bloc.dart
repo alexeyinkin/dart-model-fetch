@@ -14,6 +14,7 @@ class FirestoreFrozenLazyLoadBloc<T> extends FirestoreLazyLoadBloc<T> {
   LoadStatus get status => _status;
 
   FirestoreFrozenLazyLoadBloc({
+    required super.onError,
     required this.pageSize,
     required super.query,
     super.clientFilters,
@@ -42,7 +43,7 @@ class FirestoreFrozenLazyLoadBloc<T> extends FirestoreLazyLoadBloc<T> {
       _status = LoadStatus.ok;
       pushOutput();
     } catch (error) {
-      print(error.toString());
+      onError(error);
       _setErrorState();
     }
   }

@@ -14,6 +14,7 @@ class FirestoreLiveSingleDocumentCollectionBloc<T extends WithId<String>>
   LoadStatus _loadStatus = LoadStatus.loading;
 
   FirestoreLiveSingleDocumentCollectionBloc({
+    required super.onError,
     required this.documentReference,
     required this.fromIdAndMap,
   }) {

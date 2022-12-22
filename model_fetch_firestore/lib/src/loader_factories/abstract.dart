@@ -9,7 +9,6 @@ import '../query_builder.dart';
 
 abstract class AbstractFirestoreLoaderFactory<T extends WithId<String>,
     F extends AbstractFilter> {
-
   final _liveByIdBlocs = <String, FirestoreLiveByIdBloc<T>>{};
   final _frozenListBlocs = <String, FirestoreFrozenLazyLoadBloc<T>>{};
 
@@ -19,6 +18,20 @@ abstract class AbstractFirestoreLoaderFactory<T extends WithId<String>,
     DocumentSnapshot<Map<String, dynamic>> snapshot,
     SnapshotOptions? options,
   );
+
+  void onError(Object error);
+
+  T fromFirestoreBase(
+    DocumentSnapshot<Map<String, dynamic>> snapshot,
+    SnapshotOptions? options,
+  ) {
+    try {
+      return fromFirestore(snapshot, options);
+    } catch (e) {
+      onError(e);
+      rethrow;
+    }
+  }
 
   Map<String, Object?> toFirestore(
     T value,
@@ -34,7 +47,7 @@ abstract class AbstractFirestoreLoaderFactory<T extends WithId<String>,
   FirestoreLiveByIdBloc<T> _createAndCacheLiveByIdBloc(String id) {
     final result = FirestoreLiveByIdBloc(
       collectionReference: getCollection().withConverter(
-        fromFirestore: fromFirestore,
+        fromFirestore: fromFirestoreBase,
         toFirestore: toFirestore,
       ),
       id: id,
@@ -51,6 +64,7 @@ abstract class AbstractFirestoreLoaderFactory<T extends WithId<String>,
 
   LazyLoadBloc<T> _createAndCacheFrozenListBloc(F filter) {
     final result = FirestoreFrozenLazyLoadBloc(
+      onError: onError,
       query: createQueryBuilder(filter).query,
       pageSize: filter.pageSize,
     );
