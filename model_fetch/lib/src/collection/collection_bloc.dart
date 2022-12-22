@@ -9,6 +9,8 @@ abstract class CollectionBloc<T> {
 
   Stream<CollectionState<T>> get states => _statesController.stream;
 
+  final void Function(Object error) onError;
+
   final int? totalLimit;
   final List<AbstractClientFilter<T>> clientFilters;
 
@@ -19,8 +21,9 @@ abstract class CollectionBloc<T> {
   );
 
   CollectionBloc({
-    this.totalLimit,
+    required this.onError,
     this.clientFilters = const [],
+    this.totalLimit,
   });
 
   void pushOutput() {
