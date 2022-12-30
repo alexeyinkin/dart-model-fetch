@@ -7,5 +7,7 @@ abstract class LazyLoadBloc<T> extends CollectionBloc<T> {
     super.totalLimit,
   });
 
+  Future<void> loadAllIfCan();
+  
   Future<void> loadMoreIfCan();
 }
