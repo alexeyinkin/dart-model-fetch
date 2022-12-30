@@ -1,3 +1,7 @@
+## 0.5.3
+
+* Added `LazyLoadBloc.loadAllIfCan()`.
+
 ## 0.5.2
 
 * Downgrade the Dart SDK upper limit to `<3.0.0` from `<4.0.0` because of incomplete support by pub.dev.

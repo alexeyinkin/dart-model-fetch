@@ -1,3 +1,7 @@
+## 0.5.3
+
+* Added `FirestoreFrozenLazyLoadBloc.loadAllIfCan()`.
+
 ## 0.5.2
 
 * Added `onError` to `FirestoreLazyLoadBloc`, `FirestoreFrozenLazyLoadBloc`, `FirestoreLiveSingleDocumentCollectionBloc`.
