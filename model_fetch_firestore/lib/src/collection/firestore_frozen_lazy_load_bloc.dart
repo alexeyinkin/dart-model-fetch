@@ -22,6 +22,35 @@ class FirestoreFrozenLazyLoadBloc<T> extends FirestoreLazyLoadBloc<T> {
   });
 
   @override
+  Future<void> loadAllIfCan() async {
+    if (_status == LoadStatus.loading) return;
+    if (_hasMore) return _pushLoadingAndLoadAll();
+  }
+
+  Future<void> _pushLoadingAndLoadAll() async {
+    _status = LoadStatus.loading;
+    pushOutput();
+    await _loadAll();
+  }
+
+  Future<void> _loadAll() async {
+    _status = LoadStatus.loading;
+    try {
+      final snapshot = await getStartAtQuery().get();
+      _addQuerySnapshotToList(snapshot);
+
+      _hasMore = false;
+      _status = LoadStatus.ok;
+      pushOutput();
+
+      // ignore: avoid_catches_without_on_clauses
+    } catch (error, trace) {
+      onError(error, trace);
+      _setErrorState();
+    }
+  }
+
+  @override
   Future<void> loadMoreIfCan() async {
     if (_status == LoadStatus.loading) return;
     if (_hasMore) return _pushLoadingAndLoadMore();
