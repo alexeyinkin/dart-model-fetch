@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:collection/collection.dart';
 import 'package:model_fetch/model_fetch.dart';
 import 'package:model_interfaces/model_interfaces.dart';
 
@@ -13,7 +14,7 @@ class FirestoreLiveByFilterBloc<T extends WithId<String>>
   }
 
   void _onModelChanged(QuerySnapshot<T?> querySnapshot) {
-    final model = querySnapshot.docs.first.data();
+    final model = querySnapshot.docs.firstOrNull?.data();
 
     emitStateIfChanged(
       ModelByFilterState(
