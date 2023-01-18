@@ -53,10 +53,6 @@ abstract class AbstractFirestoreLoaderFactory<T extends WithId<String>,
     final query = createQueryBuilder(filter).query.limit(1);
 
     final result = FirestoreLiveByFilterBloc(
-      collectionReference: getCollection().withConverter(
-        fromFirestore: fromFirestoreBase,
-        toFirestore: toFirestore,
-      ),
       query: query,
     );
 

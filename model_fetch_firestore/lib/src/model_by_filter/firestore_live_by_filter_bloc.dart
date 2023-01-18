@@ -3,12 +3,11 @@ import 'package:model_fetch/model_fetch.dart';
 import 'package:model_interfaces/model_interfaces.dart';
 
 class FirestoreLiveByFilterBloc<T extends WithId<String>>
-    extends ModelByFilterBloc<Query<T>, T> {
-  final CollectionReference<T> collectionReference;
+    extends ModelByFilterBloc<String, T> {
+  final Query<T> query;
 
   FirestoreLiveByFilterBloc({
-    required this.collectionReference,
-    required super.query,
+    required this.query,
   }) {
     query.snapshots().listen(_onModelChanged);
   }

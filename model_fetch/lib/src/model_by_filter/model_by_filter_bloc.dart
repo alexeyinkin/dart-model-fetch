@@ -4,18 +4,15 @@ import 'package:rxdart/rxdart.dart';
 
 import '../load_status.dart';
 
-abstract class ModelByFilterBloc<I, T extends WithId<String>> {
-  final I query;
-
+abstract class ModelByFilterBloc<I, T extends WithId<I>> {
   final _statesController = BehaviorSubject<ModelByFilterState<I, T>>();
 
   Stream<ModelByFilterState<I, T>> get states => _statesController.stream;
 
   ModelByFilterState<I, T> _state;
 
-  ModelByFilterBloc({
-    required this.query,
-  }) : _state = ModelByFilterState(
+  ModelByFilterBloc()
+      : _state = ModelByFilterState(
           model: null,
           status: LoadStatus.notTried,
         );
@@ -45,7 +42,7 @@ abstract class ModelByFilterBloc<I, T extends WithId<String>> {
   }
 }
 
-class ModelByFilterState<I, T extends WithId<String>> {
+class ModelByFilterState<I, T extends WithId<I>> {
   final T? model;
   final LoadStatus status;
 
