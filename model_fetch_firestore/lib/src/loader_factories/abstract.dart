@@ -4,11 +4,13 @@ import 'package:model_fetch/model_fetch.dart';
 import 'package:model_interfaces/model_interfaces.dart';
 
 import '../collection/firestore_frozen_lazy_load_bloc.dart';
+import '../model_by_filter/firestore_live_by_filter_bloc.dart';
 import '../model_by_id/firestore_live_by_id_bloc.dart';
 import '../query_builder.dart';
 
 abstract class AbstractFirestoreLoaderFactory<T extends WithId<String>,
     F extends AbstractFilter> {
+  final _liveByFilterBlocs = <String, FirestoreLiveByFilterBloc<T>>{};
   final _liveByIdBlocs = <String, FirestoreLiveByIdBloc<T>>{};
   final _frozenListBlocs = <String, FirestoreFrozenLazyLoadBloc<T>>{};
 
@@ -40,6 +42,22 @@ abstract class AbstractFirestoreLoaderFactory<T extends WithId<String>,
     SetOptions? options,
   ) {
     throw UnimplementedError();
+  }
+
+  FirestoreLiveByFilterBloc<T> liveByFilterBloc(F filter) {
+    return _liveByFilterBlocs[filter] ??
+        _createAndCacheLiveByFilterBloc(filter);
+  }
+
+  FirestoreLiveByFilterBloc<T> _createAndCacheLiveByFilterBloc(F filter) {
+    final query = createQueryBuilder(filter).query.limit(1);
+
+    final result = FirestoreLiveByFilterBloc(
+      query: query,
+    );
+
+    _liveByFilterBlocs[filter.hash] = result;
+    return result;
   }
 
   FirestoreLiveByIdBloc<T> liveByIdBloc(String id) {
