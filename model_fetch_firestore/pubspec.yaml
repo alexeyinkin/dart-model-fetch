@@ -8,6 +8,7 @@ environment:
 
 dependencies:
   cloud_firestore: ^4.1.0
+  collection: ^1.17.0
   meta: ^1.7.0
   model_fetch: ^0.5.3
   model_interfaces: ^0.3.0
