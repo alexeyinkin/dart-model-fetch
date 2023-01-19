@@ -1,3 +1,7 @@
+## 0.5.4
+
+* Added `FirestoreLiveByFilterBloc`.
+
 ## 0.5.3
 
 * Added `FirestoreFrozenLazyLoadBloc.loadAllIfCan()`.

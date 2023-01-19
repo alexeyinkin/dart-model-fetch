@@ -58,8 +58,8 @@ abstract class CollectionBloc<T> {
   }
 
   void _defaultOnError(Object error, StackTrace trace) {
-    print(error);
-    print(trace);
+    print(error); // ignore: avoid_print
+    print(trace); // ignore: avoid_print
   }
 
   @mustCallSuper

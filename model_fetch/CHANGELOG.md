@@ -1,3 +1,7 @@
+## 0.5.4
+
+* Added `ModelByFilterBloc`.
+
 ## 0.5.3
 
 * Added `LazyLoadBloc.loadAllIfCan()`.
