@@ -11,6 +11,9 @@ abstract class CollectionBloc<T> {
 
   Stream<CollectionState<T>> get states => _statesController.stream;
 
+  CollectionState<T> get currentState =>
+      _statesController.valueOrNull ?? initialState;
+
   final OnError? _onError;
 
   final int? totalLimit;

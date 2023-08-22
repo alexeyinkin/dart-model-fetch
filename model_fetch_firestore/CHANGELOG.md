@@ -1,3 +1,7 @@
+## 0.5.5
+
+* Fixed unrecognized platforms on pub.dev.
+
 ## 0.5.4
 
 * Added `FirestoreLiveByFilterBloc`.

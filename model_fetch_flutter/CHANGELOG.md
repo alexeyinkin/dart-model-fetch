@@ -1,3 +1,7 @@
+## 0.5.5
+
+* Upgrade to `total_lints` v3.1.0.
+
 ## 0.5.1
 
 * Added `BlocAutoLoadMoreWidget`, `LazyLoadBlocTrailingWidget`.

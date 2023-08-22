@@ -1,3 +1,7 @@
+## 0.5.5
+
+* Added `CollectionBloc.currentState`.
+
 ## 0.5.4
 
 * Added `ModelByFilterBloc`.
