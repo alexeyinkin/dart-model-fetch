@@ -1,19 +1,18 @@
-name: model_fetch_firestore
-description: A lazy load BLoC wrapper for Firestore collections.
+name: model_fetch_firestore_json_files
+description: A lazy load BLoC wrapper for local JSON files in Firestore format
 version: 0.5.6
 repository: https://github.com/alexeyinkin/dart-model-fetch
 
 environment:
   sdk: '>=2.17.0 <4.0.0'
-  flutter: ">=3.0.0"
 
 dependencies:
-  cloud_firestore: ^4.1.0
   collection: ^1.16.0
-  flutter: { sdk: flutter }
+  firestore_api_converter: ^0.1.0
   meta: ^1.7.0
   model_fetch: ^0.5.6
   model_interfaces: ^0.3.0
+  path: ^1.8.3
 
 dependency_overrides:
   #model_fetch: { path: '../model_fetch' }

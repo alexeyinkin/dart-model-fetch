@@ -1,3 +1,7 @@
+## 0.5.6
+
+* Bloc management extracted to the `LoaderFactory` of `model_fetch`.
+
 ## 0.5.5
 
 * Fixed unrecognized platforms on pub.dev.

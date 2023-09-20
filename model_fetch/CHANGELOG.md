@@ -1,3 +1,10 @@
+## 0.5.6
+
+* Added `LoaderFactory`.
+* Added `EmptyLazyLoadBloc`, `IterableLazyLoadBloc`, `FixedModelByIdBloc`.
+* Added `ModelByIdBloc.reload()`.
+* Added `AsyncDisposable` as interface to all blocs.
+
 ## 0.5.5
 
 * Added `CollectionBloc.currentState`.

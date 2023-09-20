@@ -2,9 +2,14 @@ import 'package:meta/meta.dart';
 import 'package:model_interfaces/model_interfaces.dart';
 import 'package:rxdart/rxdart.dart';
 
+import '../interfaces/async_disposable.dart';
 import '../load_status.dart';
 
-abstract class ModelByIdBloc<I, T extends WithId<I>> {
+abstract class ModelByIdBloc<
+    I,
+    T extends WithId<I>
+//
+    > implements AsyncDisposable {
   final I id;
 
   final _statesController = BehaviorSubject<ModelByIdState<I, T>>();
@@ -40,9 +45,13 @@ abstract class ModelByIdBloc<I, T extends WithId<I>> {
     _state = state;
   }
 
+  @override
+  @mustCallSuper
   Future<void> dispose() async {
     await _statesController.close();
   }
+
+  void reload();
 }
 
 class ModelByIdState<I, T extends WithId<I>> {

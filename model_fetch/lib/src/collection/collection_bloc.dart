@@ -2,11 +2,13 @@ import 'package:meta/meta.dart';
 import 'package:rxdart/rxdart.dart';
 
 import '../abstract_client_filter.dart';
+import '../interfaces/async_disposable.dart';
 import '../load_status.dart';
 
 typedef OnError = void Function(Object error, StackTrace trace);
 
-abstract class CollectionBloc<T> {
+/// A local representation of a possibly larger collection.
+abstract class CollectionBloc<T> implements AsyncDisposable {
   final _statesController = BehaviorSubject<CollectionState<T>>();
 
   Stream<CollectionState<T>> get states => _statesController.stream;
@@ -65,6 +67,7 @@ abstract class CollectionBloc<T> {
     print(trace); // ignore: avoid_print
   }
 
+  @override
   @mustCallSuper
   Future<void> dispose() async {
     await _statesController.close();

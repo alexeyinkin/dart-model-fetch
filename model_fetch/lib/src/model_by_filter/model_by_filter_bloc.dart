@@ -2,9 +2,14 @@ import 'package:meta/meta.dart';
 import 'package:model_interfaces/model_interfaces.dart';
 import 'package:rxdart/rxdart.dart';
 
+import '../interfaces/async_disposable.dart';
 import '../load_status.dart';
 
-abstract class ModelByFilterBloc<I, T extends WithId<I>> {
+abstract class ModelByFilterBloc<
+    I,
+    T extends WithId<I>
+//
+    > implements AsyncDisposable {
   final _statesController = BehaviorSubject<ModelByFilterState<I, T>>();
 
   Stream<ModelByFilterState<I, T>> get states => _statesController.stream;
@@ -37,6 +42,8 @@ abstract class ModelByFilterBloc<I, T extends WithId<I>> {
     _state = state;
   }
 
+  @override
+  @mustCallSuper
   Future<void> dispose() async {
     await _statesController.close();
   }

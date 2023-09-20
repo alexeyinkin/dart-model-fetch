@@ -21,6 +21,7 @@ abstract class FirestoreLazyLoadBloc<T> extends LazyLoadBloc<T> {
   }
 
   @protected
+  // ignore: use_setters_to_change_properties
   void setLastDocument(DocumentSnapshot<T>? doc) {
     _lastDocument = doc;
   }

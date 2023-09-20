@@ -26,4 +26,9 @@ class FirestoreLiveByIdBloc<T extends WithId<String>>
       ),
     );
   }
+
+  @override
+  void reload() {
+    // No-op, the model is live.
+  }
 }

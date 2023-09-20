@@ -8,12 +8,16 @@ import '../model_by_filter/firestore_live_by_filter_bloc.dart';
 import '../model_by_id/firestore_live_by_id_bloc.dart';
 import '../query_builder.dart';
 
-abstract class AbstractFirestoreLoaderFactory<T extends WithId<String>,
-    F extends AbstractFilter> {
-  final _liveByFilterBlocs = <String, FirestoreLiveByFilterBloc<T>>{};
-  final _liveByIdBlocs = <String, FirestoreLiveByIdBloc<T>>{};
-  final _frozenListBlocs = <String, FirestoreFrozenLazyLoadBloc<T>>{};
-
+abstract class AbstractFirestoreLoaderFactory<
+    T extends WithId<String>,
+    F extends AbstractFilter
+//
+    > extends LoaderFactory<
+    String,
+    T,
+    F
+//
+    > {
   QueryBuilder<T> createQueryBuilder(F filter);
 
   T fromFirestore(
@@ -44,53 +48,49 @@ abstract class AbstractFirestoreLoaderFactory<T extends WithId<String>,
     throw UnimplementedError();
   }
 
-  FirestoreLiveByFilterBloc<T> liveByFilterBloc(F filter) {
-    return _liveByFilterBlocs[filter] ??
-        _createAndCacheLiveByFilterBloc(filter);
-  }
-
-  FirestoreLiveByFilterBloc<T> _createAndCacheLiveByFilterBloc(F filter) {
-    final query = createQueryBuilder(filter).query.limit(1);
-
-    final result = FirestoreLiveByFilterBloc(
-      query: query,
-    );
-
-    _liveByFilterBlocs[filter.hash] = result;
-    return result;
-  }
-
-  FirestoreLiveByIdBloc<T> liveByIdBloc(String id) {
-    return _liveByIdBlocs[id] ?? _createAndCacheLiveByIdBloc(id);
-  }
-
-  FirestoreLiveByIdBloc<T> _createAndCacheLiveByIdBloc(String id) {
-    final result = FirestoreLiveByIdBloc(
+  @override
+  FirestoreLiveByIdBloc<T> createLiveByIdBloc(String id) {
+    return FirestoreLiveByIdBloc(
       collectionReference: getCollection().withConverter(
         fromFirestore: fromFirestoreBase,
         toFirestore: toFirestore,
       ),
       id: id,
     );
-
-    _liveByIdBlocs[id] = result;
-    return result;
   }
 
-  LazyLoadBloc<T> frozenListBloc(F filter) {
-    return _frozenListBlocs[filter.hash] ??
-        _createAndCacheFrozenListBloc(filter);
+  @override
+  ModelByIdBloc<String, T> createFrozenByIdBloc(String id) {
+    throw UnimplementedError();
   }
 
-  LazyLoadBloc<T> _createAndCacheFrozenListBloc(F filter) {
-    final result = FirestoreFrozenLazyLoadBloc(
+  @override
+  FirestoreLiveByFilterBloc<T> createLiveModelByFilterBloc(F filter) {
+    final query = createQueryBuilder(filter).query.limit(1);
+
+    return FirestoreLiveByFilterBloc(
+      query: query,
+    );
+  }
+
+  @override
+  ModelByFilterBloc<String, T> createFrozenModelByFilterBloc(F filter) {
+    // TODO(alexeyinkin): Clone FirestoreLiveByFilterBloc but make it frozen.
+    throw UnimplementedError('TODO');
+  }
+
+  @override
+  LazyLoadBloc<T> createLiveListBloc(F filter) {
+    throw UnimplementedError();
+  }
+
+  @override
+  FirestoreFrozenLazyLoadBloc<T> createFrozenListBloc(F filter) {
+    return FirestoreFrozenLazyLoadBloc(
       onError: onError,
       query: createQueryBuilder(filter).query,
       pageSize: filter.pageSize,
     );
-
-    _frozenListBlocs[filter.hash] = result;
-    return result;
   }
 
   @protected
