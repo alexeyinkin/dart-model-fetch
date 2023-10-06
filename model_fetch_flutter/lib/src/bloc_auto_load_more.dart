@@ -23,7 +23,7 @@ class BlocAutoLoadMoreWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return VisibilityDetector(
-      key: const ValueKey('LoadMoreWidget'),
+      key: ValueKey('LoadMoreWidget_with_${bloc.currentState.items.length}'),
       onVisibilityChanged: _onVisibilityChanged,
       child: LazyLoadBlocTrailingWidget(
         bloc: bloc,

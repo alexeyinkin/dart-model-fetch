@@ -1,3 +1,7 @@
+## 0.5.6
+
+* Support `visibility_detector` v0.4.x in addition to v0.3.3.
+
 ## 0.5.5
 
 * Upgrade to `total_lints` v3.1.0.
