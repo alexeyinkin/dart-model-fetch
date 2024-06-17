@@ -1,3 +1,7 @@
+## 0.5.7
+
+* Support [cloud_firestore](https://pub.dev/packages/cloud_firestore) v5.0.0+.
+
 ## 0.5.6
 
 * Bloc management extracted to the `LoaderFactory` of `model_fetch`.
