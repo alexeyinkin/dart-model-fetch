@@ -25,7 +25,10 @@ abstract class AbstractFirestoreLoaderFactory<
     SnapshotOptions? options,
   );
 
-  void onError(Object error, StackTrace trace);
+  void onError(Object error, StackTrace trace) {
+    print(error); // ignore: avoid_print
+    print(trace); // ignore: avoid_print
+  }
 
   T fromFirestoreBase(
     DocumentSnapshot<Map<String, dynamic>> snapshot,

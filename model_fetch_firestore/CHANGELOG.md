@@ -1,3 +1,8 @@
+## 0.6.0-1.dev
+
+* Added `@FirestoreModel` macro.
+* `AbstractFirestoreLoaderFactory.onError` made non-abstract, it prints the error.
+
 ## 0.5.7
 
 * Support [cloud_firestore](https://pub.dev/packages/cloud_firestore) v5.0.0+.
