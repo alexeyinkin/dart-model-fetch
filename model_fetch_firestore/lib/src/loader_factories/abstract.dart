@@ -18,7 +18,7 @@ abstract class AbstractFirestoreLoaderFactory<
     F
 //
     > {
-  QueryBuilder<T> createQueryBuilder(F filter);
+  QueryBuilder<T, F> createQueryBuilder(F filter);
 
   T fromFirestore(
     DocumentSnapshot<Map<String, dynamic>> snapshot,
@@ -39,6 +39,8 @@ abstract class AbstractFirestoreLoaderFactory<
 
       // ignore: avoid_catches_without_on_clauses
     } catch (error, trace) {
+      // TODO(alexeyinkin): Allow to silence this.
+      print('Error denormalizing object ${snapshot.id}.');
       onError(error, trace);
       rethrow;
     }
@@ -84,6 +86,10 @@ abstract class AbstractFirestoreLoaderFactory<
 
   @override
   LazyLoadBloc<T> createLiveListBloc(F filter) {
+    // return FirestoreLiveLoader(
+    //   onError: onError,
+    //   query: createQueryBuilder(filter).query,
+    // );
     throw UnimplementedError();
   }
 

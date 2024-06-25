@@ -1,3 +1,9 @@
+## 0.6.0-2.dev
+
+* Added `QueryBuilder.filter`, `.loaderFactory`, `.collectionName`, `.collectionReference`, `.emptyQuery`.
+* Added `F` type parameter to `QueryBuilder`.
+* Creating an unnamed constructor for a `Filter` class.
+
 ## 0.6.0-1.dev
 
 * Added `@FirestoreModel` macro.

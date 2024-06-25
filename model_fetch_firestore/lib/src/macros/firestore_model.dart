@@ -2,6 +2,7 @@
 
 import 'dart:async';
 
+import 'package:common_macros/common_macros.dart';
 import 'package:macro_util/macro_util.dart';
 import 'package:macros/macros.dart';
 
@@ -40,8 +41,33 @@ macro class FirestoreModel implements ClassTypesMacro, ClassDeclarationsMacro {
   ) async {
     final intr = await _introspect(clazz, builder);
 
+    await _buildFilter(intr, builder);
     _buildLoaderFactory(intr, builder);
     _buildQueryBuilder(intr, builder);
+  }
+
+  Future<void> _buildFilter(
+    _IntrospectionData intr,
+    MemberDeclarationBuilder builder,
+  ) async {
+    final filterName = _getFilterName(intr.clazz);
+    final i = intr.ids;
+
+    final filterIdentifier = await builder.resolveIdentifier(intr.clazz.library.uri, filterName);
+    final clazz = await builder.typeDeclarationOf(filterIdentifier);
+
+    if (clazz is! ClassDeclaration) {
+      throw Exception('Cannot resolve the declaration of $filterName');
+    }
+
+    builder.declareInLibrary(
+      DeclarationCode.fromParts([
+        //
+        'augment class $filterName extends ', i.AbstractFilter, ' {\n',
+        ...await const Constructor().getParts(clazz, builder),
+        '}\n',
+      ]),
+    );
   }
 
   void _buildLoaderFactory(
@@ -88,7 +114,7 @@ macro class FirestoreModel implements ClassTypesMacro, ClassDeclarationsMacro {
       //
       '@', i.override, '\n',
       '$builderName createQueryBuilder($filterName filter) {\n',
-      '  return $builderName(filter, this);\n',
+      '  return $builderName(filter: filter, loaderFactory: this);\n',
       '}\n',
     ];
   }
@@ -129,7 +155,6 @@ macro class FirestoreModel implements ClassTypesMacro, ClassDeclarationsMacro {
   ) {
     final name = intr.clazz.identifier.name;
     final filterName = _getFilterName(intr.clazz);
-    final factoryName = _getLoaderFactoryClassName(intr.clazz);
     final builderName = _getQueryBuilderName(intr.clazz);
     final i = intr.ids;
 
@@ -137,25 +162,19 @@ macro class FirestoreModel implements ClassTypesMacro, ClassDeclarationsMacro {
       DeclarationCode.fromParts([
         //
         'augment class $builderName ',
-        'extends ', i.QueryBuilder, '<', name, '> {\n',
-        '  final $filterName filter;\n',
-        '  final $factoryName loaderFactory;\n',
+        'extends ', i.QueryBuilder, '<$name, $filterName> {\n',
         '  ', i.Query, '<$name>? _query;\n',
 
-        '  @', i.override, '\n',
-        '  ', i.Query, '<$name> get query => _query ?? _createEmptyQuery();\n',
-
-        '  $builderName(this.filter, this.loaderFactory) {\n',
+        '  $builderName({required super.filter, required super.loaderFactory}) {\n',
         // TODO(alexeyinkin): Build the query.
         '  }\n',
 
-        '  ', i.Query, '<$name> _createEmptyQuery() {\n',
-        '    return ', i.FirebaseFirestore,
-        '.instance.collection("$name").withConverter(\n',
-        '      fromFirestore: loaderFactory.fromFirestoreBase,\n',
-        '      toFirestore: (_, __) => throw ', i.UnimplementedError, '(),\n',
-        '    );\n',
-        '  }\n',
+        '  @', i.override, '\n',
+        '  ', i.Query, '<$name> get query => _query ?? emptyQuery;\n',
+
+        '  @', i.override, '\n',
+        '  ', i.String, ' get collectionName => "$name";\n'
+
         '}\n',
       ]),
     );
@@ -206,6 +225,7 @@ class _IntrospectionData {
 
 @ResolveIdentifiers()
 class _ResolvedIdentifiers {
+  final Identifier AbstractFilter;
   final Identifier AbstractFirestoreLoaderFactory;
   final Identifier CollectionReference;
   final Identifier DocumentSnapshot;
@@ -215,7 +235,6 @@ class _ResolvedIdentifiers {
   final Identifier QueryBuilder;
   final Identifier SnapshotOptions;
   final Identifier String;
-  final Identifier UnimplementedError;
   final Identifier dynamic;
   final Identifier override;
 }
