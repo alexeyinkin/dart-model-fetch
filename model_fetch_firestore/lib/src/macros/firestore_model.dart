@@ -7,7 +7,8 @@ import 'package:macro_util/macro_util.dart';
 import 'package:macros/macros.dart';
 
 final _loaderFactoryLibrary = Uri.parse(
-    'package:model_fetch_firestore/src/loader_factories/abstract.dart',);
+  'package:model_fetch_firestore/src/loader_factories/abstract.dart',
+);
 
 macro class FirestoreModel implements ClassTypesMacro, ClassDeclarationsMacro {
   const FirestoreModel();
@@ -53,7 +54,8 @@ macro class FirestoreModel implements ClassTypesMacro, ClassDeclarationsMacro {
     final filterName = _getFilterName(intr.clazz);
     final i = intr.ids;
 
-    final filterIdentifier = await builder.resolveIdentifier(intr.clazz.library.uri, filterName);
+    final filterIdentifier =
+        await builder.resolveIdentifier(intr.clazz.library.uri, filterName);
     final clazz = await builder.typeDeclarationOf(filterIdentifier);
 
     if (clazz is! ClassDeclaration) {
@@ -173,8 +175,9 @@ macro class FirestoreModel implements ClassTypesMacro, ClassDeclarationsMacro {
         '  ', i.Query, '<$name> get query => _query ?? emptyQuery;\n',
 
         '  @', i.override, '\n',
-        '  ', i.String, ' get collectionName => "$name";\n'
-
+        '  ',
+        i.String,
+        ' get collectionName => "$name";\n',
         '}\n',
       ]),
     );
