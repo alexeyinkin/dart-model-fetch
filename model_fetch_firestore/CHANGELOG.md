@@ -1,3 +1,7 @@
+## 0.6.0-3.dev
+
+* Make filter constructors const.
+
 ## 0.6.0-2.dev
 
 * Added `QueryBuilder.filter`, `.loaderFactory`, `.collectionName`, `.collectionReference`, `.emptyQuery`.

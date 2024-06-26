@@ -66,7 +66,7 @@ macro class FirestoreModel implements ClassTypesMacro, ClassDeclarationsMacro {
       DeclarationCode.fromParts([
         //
         'augment class $filterName extends ', i.AbstractFilter, ' {\n',
-        ...await const Constructor().getParts(clazz, builder),
+        ...await const Constructor(isConst: true).getParts(clazz, builder),
         '}\n',
       ]),
     );
