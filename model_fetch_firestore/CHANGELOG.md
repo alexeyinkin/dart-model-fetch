@@ -1,3 +1,8 @@
+## 0.6.0-4.dev
+
+* Added `id` to filters.
+* Added `QueryBuilder.sourceType`.
+
 ## 0.6.0-3.dev
 
 * Make filter constructors const.

@@ -1,0 +1,4 @@
+enum QuerySourceType {
+  collection,
+  collectionGroup,
+}

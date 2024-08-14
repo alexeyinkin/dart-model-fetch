@@ -6,12 +6,18 @@ import 'package:common_macros/common_macros.dart';
 import 'package:macro_util/macro_util.dart';
 import 'package:macros/macros.dart';
 
+import '../../enums/query_source_type.dart';
+
 final _loaderFactoryLibrary = Uri.parse(
   'package:model_fetch_firestore/src/loader_factories/abstract.dart',
 );
 
 macro class FirestoreModel implements ClassTypesMacro, ClassDeclarationsMacro {
-  const FirestoreModel();
+  final QuerySourceType querySourceType;
+
+  const FirestoreModel({
+    this.querySourceType = QuerySourceType.collection,
+  });
 
   @override
   Future<void> buildTypesForClass(
@@ -66,7 +72,13 @@ macro class FirestoreModel implements ClassTypesMacro, ClassDeclarationsMacro {
       DeclarationCode.fromParts([
         //
         'augment class $filterName extends ', i.AbstractFilter, ' {\n',
-        ...await const Constructor(isConst: true).getParts(clazz, builder),
+        '  final ', i.String, '? id;',
+        ...await const Constructor(
+          isConst: true,
+          extraNamedParameters: [
+            ['this.id'],
+          ],
+        ).getParts(clazz, builder),
         '}\n',
       ]),
     );
@@ -116,7 +128,11 @@ macro class FirestoreModel implements ClassTypesMacro, ClassDeclarationsMacro {
       //
       '@', i.override, '\n',
       '$builderName createQueryBuilder($filterName filter) {\n',
-      '  return $builderName(filter: filter, loaderFactory: this);\n',
+      '  return $builderName(\n',
+      '    filter: filter,\n',
+      '    loaderFactory: this,\n',
+      '    sourceType: ', i.QuerySourceType, '.', querySourceType.name, ',\n',
+      '  );\n',
       '}\n',
     ];
   }
@@ -167,17 +183,21 @@ macro class FirestoreModel implements ClassTypesMacro, ClassDeclarationsMacro {
         'extends ', i.QueryBuilder, '<$name, $filterName> {\n',
         '  ', i.Query, '<$name>? _query;\n',
 
-        '  $builderName({required super.filter, required super.loaderFactory}) {\n',
-        // TODO(alexeyinkin): Build the query.
+        '  $builderName({\n',
+        '    required super.filter,\n',
+        '    required super.loaderFactory,\n',
+        '    required super.sourceType,\n',
+        '  }) {\n',
+        '    _build();',
         '  }\n',
 
         '  @', i.override, '\n',
         '  ', i.Query, '<$name> get query => _query ?? emptyQuery;\n',
 
         '  @', i.override, '\n',
-        '  ',
-        i.String,
-        ' get collectionName => "$name";\n',
+        '  ', i.String, ' get collectionName => "$name";\n',
+
+        ..._getBuild(intr),
         '}\n',
       ]),
     );
@@ -193,6 +213,23 @@ macro class FirestoreModel implements ClassTypesMacro, ClassDeclarationsMacro {
 
   String _getQueryBuilderName(ClassDeclaration clazz) {
     return '${clazz.identifier.name}QueryBuilder';
+  }
+
+  List<Object> _getBuild(_IntrospectionData intr) {
+    final i = intr.ids;
+
+    return [
+      //
+      'void _build() {\n',
+      '  if (filter.id != null) {\n',
+      '    _query = query.where(\n',
+      '      ', i.FieldPath, '.documentId,\n',
+      '      isEqualTo: filter.id!\n',
+      '    );\n',
+      '  }\n',
+      // TODO: Filter with other fields in the filter.
+      '}\n',
+    ];
   }
 }
 
@@ -232,12 +269,19 @@ class _ResolvedIdentifiers {
   final Identifier AbstractFirestoreLoaderFactory;
   final Identifier CollectionReference;
   final Identifier DocumentSnapshot;
+  final Identifier FieldPath;
   final Identifier FirebaseFirestore;
   final Identifier Map;
   final Identifier Query;
   final Identifier QueryBuilder;
+  final Identifier QuerySourceType;
   final Identifier SnapshotOptions;
   final Identifier String;
   final Identifier dynamic;
   final Identifier override;
+}
+
+macro class FirestoreCollectionGroupModel extends FirestoreModel {
+  const FirestoreCollectionGroupModel()
+      : super(querySourceType: QuerySourceType.collectionGroup);
 }
