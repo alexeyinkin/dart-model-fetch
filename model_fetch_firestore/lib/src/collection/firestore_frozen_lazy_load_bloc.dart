@@ -37,7 +37,7 @@ class FirestoreFrozenLazyLoadBloc<T> extends FirestoreLazyLoadBloc<T> {
     _status = LoadStatus.loading;
     try {
       final snapshot = await getStartAtQuery().get();
-      _addQuerySnapshotToList(snapshot);
+      await _addQuerySnapshotToList(snapshot);
 
       _hasMore = false;
       _status = LoadStatus.ok;
@@ -66,7 +66,7 @@ class FirestoreFrozenLazyLoadBloc<T> extends FirestoreLazyLoadBloc<T> {
     _status = LoadStatus.loading;
     try {
       final snapshot = await getStartAtQuery().limit(pageSize).get();
-      _addQuerySnapshotToList(snapshot);
+      await _addQuerySnapshotToList(snapshot);
 
       if (snapshot.docs.length < pageSize) _hasMore = false;
       _status = LoadStatus.ok;
@@ -79,13 +79,15 @@ class FirestoreFrozenLazyLoadBloc<T> extends FirestoreLazyLoadBloc<T> {
     }
   }
 
-  void _addQuerySnapshotToList(QuerySnapshot<T> snapshot) {
+  Future<void> _addQuerySnapshotToList(
+    QuerySnapshot<Future<T>> snapshot,
+  ) async {
     if (snapshot.docs.isEmpty) {
       _hasMore = false;
       return;
     }
 
-    _objects.addAll(snapshot.docs.map((doc) => doc.data()));
+    _objects.addAll(await Future.wait(snapshot.docs.map((doc) => doc.data())));
 
     if (totalLimit != null && _objects.length >= totalLimit!) {
       // TODO(alexeyinkin): Remove excess over the limit, https://github.com/alexeyinkin/dart-model-fetch/issues/1

@@ -1,3 +1,8 @@
+## 0.6.0-5.dev
+
+* **BREAKING:** Added abstract `ModelByIdBloc.get()`.
+* Support [rxdart](https://pub.dev/packages/rxdart) 0.28.
+
 ## 0.5.6
 
 * Added `LoaderFactory`.

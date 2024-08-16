@@ -1,34 +1,60 @@
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'package:model_fetch/model_fetch.dart';
 import 'package:model_interfaces/model_interfaces.dart';
 
+import '../util.dart';
+
 class FirestoreLiveByIdBloc<T extends WithId<String>>
     extends ModelByIdBloc<String, T> {
-  final CollectionReference<T> collectionReference;
+  final CollectionReference<Future<T>> collectionReference;
+  final ErrorCallback onError;
 
-  final DocumentReference<T> _doc;
+  final DocumentReference<Future<T>> _doc;
+  StreamSubscription? _subscription;
+
+  T? _model;
+  final _firstLoadCompleter = Completer<void>();
 
   FirestoreLiveByIdBloc({
-    required this.collectionReference,
     required super.id,
+    required this.collectionReference,
+    required this.onError,
   }) : _doc = collectionReference.doc(id) {
-    _doc.snapshots().listen(_onModelChanged);
+    _subscription =
+        _doc.snapshots().handleError(onError).listen(_onModelChanged);
   }
 
-  void _onModelChanged(DocumentSnapshot<T> documentSnapshot) {
-    final model = documentSnapshot.data();
+  Future<void> _onModelChanged(
+    DocumentSnapshot<Future<T>> documentSnapshot,
+  ) async {
+    _model = await documentSnapshot.data();
+    _firstLoadCompleter.complete();
 
     emitStateIfChanged(
       ModelByIdState(
-        model: model,
-        status: model == null ? LoadStatus.error : LoadStatus.ok,
+        model: _model,
+        status: _model == null ? LoadStatus.error : LoadStatus.ok,
       ),
     );
   }
 
   @override
+  Future<T?> get() async {
+    await _firstLoadCompleter.future;
+    return _model;
+  }
+
+  @override
   void reload() {
     // No-op, the model is live.
+  }
+
+  @override
+  Future<void> dispose() async {
+    await _subscription?.cancel();
+    await super.dispose();
   }
 }

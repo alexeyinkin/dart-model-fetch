@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:meta/meta.dart';
 import 'package:model_fetch/model_fetch.dart';
 import 'package:model_interfaces/model_interfaces.dart';
 
@@ -20,22 +19,22 @@ abstract class AbstractFirestoreLoaderFactory<
     > {
   QueryBuilder<T, F> createQueryBuilder(F filter);
 
-  T fromFirestore(
+  Future<T> fromFirestore(
     DocumentSnapshot<Map<String, dynamic>> snapshot,
     SnapshotOptions? options,
   );
 
   void onError(Object error, StackTrace trace) {
-    print(error); // ignore: avoid_print
+    print('Error in ${runtimeType}: $error'); // ignore: avoid_print
     print(trace); // ignore: avoid_print
   }
 
-  T fromFirestoreBase(
+  Future<T> fromFirestoreBase(
     DocumentSnapshot<Map<String, dynamic>> snapshot,
     SnapshotOptions? options,
-  ) {
+  ) async {
     try {
-      return fromFirestore(snapshot, options);
+      return await fromFirestore(snapshot, options);
 
       // ignore: avoid_catches_without_on_clauses
     } catch (error, trace) {
@@ -47,7 +46,7 @@ abstract class AbstractFirestoreLoaderFactory<
   }
 
   Map<String, Object?> toFirestore(
-    T value,
+    Future<T> value,
     SetOptions? options,
   ) {
     throw UnimplementedError();
@@ -56,11 +55,12 @@ abstract class AbstractFirestoreLoaderFactory<
   @override
   FirestoreLiveByIdBloc<T> createLiveByIdBloc(String id) {
     return FirestoreLiveByIdBloc(
-      collectionReference: getCollection().withConverter(
+      collectionReference: defaultCollectionReference.withConverter(
         fromFirestore: fromFirestoreBase,
         toFirestore: toFirestore,
       ),
       id: id,
+      onError: onError,
     );
   }
 
@@ -74,6 +74,7 @@ abstract class AbstractFirestoreLoaderFactory<
     final query = createQueryBuilder(filter).query.limit(1);
 
     return FirestoreLiveByFilterBloc(
+      onError: onError,
       query: query,
     );
   }
@@ -97,11 +98,13 @@ abstract class AbstractFirestoreLoaderFactory<
   FirestoreFrozenLazyLoadBloc<T> createFrozenListBloc(F filter) {
     return FirestoreFrozenLazyLoadBloc(
       onError: onError,
-      query: createQueryBuilder(filter).query,
       pageSize: filter.pageSize,
+      query: createQueryBuilder(filter).query,
     );
   }
 
-  @protected
-  CollectionReference<Map<String, dynamic>> getCollection();
+  String get defaultCollectionName;
+
+  CollectionReference<Map<String, dynamic>> get defaultCollectionReference =>
+      FirebaseFirestore.instance.collection(defaultCollectionName);
 }

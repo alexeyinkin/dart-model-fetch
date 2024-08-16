@@ -99,7 +99,7 @@ macro class FirestoreModel implements ClassTypesMacro, ClassDeclarationsMacro {
         ' {\n',
         ..._getCreateQueryBuilder(intr),
         ..._getFromFirestore(intr),
-        ..._getGetCollectionReference(intr),
+        ..._getDefaultCollectionName(intr),
         '}\n',
       ]),
     );
@@ -144,26 +144,23 @@ macro class FirestoreModel implements ClassTypesMacro, ClassDeclarationsMacro {
     return [
       //
       '@', i.override, '\n',
-      name, ' fromFirestore(',
+      i.Future, '<', name, '> fromFirestore(',
       i.DocumentSnapshot,
       '<', i.Map, '<', i.String, ', ', i.dynamic, '>> snapshot,',
       i.SnapshotOptions, '? options,',
-      ') => ',
+      ') async => ',
       name, '.fromJson({"id": snapshot.id, ...?snapshot.data()});',
     ];
   }
 
-  List<Object> _getGetCollectionReference(_IntrospectionData intr) {
+  List<Object> _getDefaultCollectionName(_IntrospectionData intr) {
     final name = intr.clazz.identifier.name;
     final i = intr.ids;
 
     return [
       //
       '@', i.override, '\n',
-      i.CollectionReference,
-      '<', i.Map, '<', i.String, ', ', i.dynamic, '>> getCollection() {\n',
-      '  return ', i.FirebaseFirestore, '.instance.collection("$name");\n',
-      '}\n',
+      i.String, ' get defaultCollectionName => "$name";\n',
     ];
   }
 
@@ -181,7 +178,7 @@ macro class FirestoreModel implements ClassTypesMacro, ClassDeclarationsMacro {
         //
         'augment class $builderName ',
         'extends ', i.QueryBuilder, '<$name, $filterName> {\n',
-        '  ', i.Query, '<$name>? _query;\n',
+        '  ', i.Query, '<', i.Future, '<$name>>? _query;\n',
 
         '  $builderName({\n',
         '    required super.filter,\n',
@@ -192,7 +189,8 @@ macro class FirestoreModel implements ClassTypesMacro, ClassDeclarationsMacro {
         '  }\n',
 
         '  @', i.override, '\n',
-        '  ', i.Query, '<$name> get query => _query ?? emptyQuery;\n',
+        '  ', i.Query, '<', i.Future, '<$name>> get query => ',
+        '_query ?? emptyQuery;\n',
 
         '  @', i.override, '\n',
         '  ', i.String, ' get collectionName => "$name";\n',
@@ -267,10 +265,9 @@ class _IntrospectionData {
 class _ResolvedIdentifiers {
   final Identifier AbstractFilter;
   final Identifier AbstractFirestoreLoaderFactory;
-  final Identifier CollectionReference;
   final Identifier DocumentSnapshot;
   final Identifier FieldPath;
-  final Identifier FirebaseFirestore;
+  final Identifier Future;
   final Identifier Map;
   final Identifier Query;
   final Identifier QueryBuilder;

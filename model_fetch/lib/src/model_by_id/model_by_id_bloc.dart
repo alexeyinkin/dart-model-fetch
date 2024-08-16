@@ -51,6 +51,9 @@ abstract class ModelByIdBloc<
     await _statesController.close();
   }
 
+  /// Loads the model if it is not loaded yet, and returns it or null on error.
+  Future<T?> get();
+
   void reload();
 }
 

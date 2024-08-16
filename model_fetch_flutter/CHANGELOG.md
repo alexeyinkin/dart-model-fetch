@@ -1,3 +1,7 @@
+## 0.6.0-5.dev
+
+* Support [model_fetch](https://pub.dev/packages/model_fetch) v0.6.0-5.dev.
+
 ## 0.5.6
 
 * Support `visibility_detector` v0.4.x in addition to v0.3.3.

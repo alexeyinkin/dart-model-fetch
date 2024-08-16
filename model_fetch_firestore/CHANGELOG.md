@@ -1,3 +1,9 @@
+## 0.6.0-5.dev
+
+* `withConverter()` changed from `T` to `Future<T>`.
+* Added `onError` and `dispose()` to `FirestoreLiveByIdBloc` and `FirestoreLiveByFilterBloc`.
+* Moved the source of truth of the default collection from `QueryBuilder` to `AbstractFirestoreLoaderFactory`.
+
 ## 0.6.0-4.dev
 
 * Added `id` to filters.

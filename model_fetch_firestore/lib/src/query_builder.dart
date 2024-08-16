@@ -21,22 +21,22 @@ abstract class QueryBuilder<
     required this.sourceType,
   });
 
-  Query<T> get query;
+  Query<Future<T>> get query => emptyQuery;
 
-  String get collectionName;
+  String get collectionName => loaderFactory.defaultCollectionName;
 
   Query<Map<String, dynamic>> get collectionGroupQuery =>
       FirebaseFirestore.instance.collectionGroup(collectionName);
 
   CollectionReference<Map<String, dynamic>> get collectionReference =>
-      FirebaseFirestore.instance.collection(collectionName);
+      loaderFactory.defaultCollectionReference;
 
   Query<Map<String, dynamic>> get _emptyMapQuery => switch (sourceType) {
         QuerySourceType.collection => collectionReference,
         QuerySourceType.collectionGroup => collectionGroupQuery,
       };
 
-  Query<T> get emptyQuery => _emptyMapQuery.withConverter(
+  Query<Future<T>> get emptyQuery => _emptyMapQuery.withConverter(
         fromFirestore: loaderFactory.fromFirestoreBase,
         toFirestore: (_, __) => throw UnimplementedError(),
       );

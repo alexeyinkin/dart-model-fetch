@@ -38,6 +38,9 @@ class FixedModelByIdBloc<
   }
 
   @override
+  Future<T> get() async => model;
+
+  @override
   void reload() {
     model = _getter();
     emitState(

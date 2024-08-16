@@ -4,8 +4,7 @@ import 'package:rxdart/rxdart.dart';
 import '../abstract_client_filter.dart';
 import '../interfaces/async_disposable.dart';
 import '../load_status.dart';
-
-typedef OnError = void Function(Object error, StackTrace trace);
+import '../util.dart';
 
 /// A local representation of a possibly larger collection.
 abstract class CollectionBloc<T> implements AsyncDisposable {
@@ -16,7 +15,7 @@ abstract class CollectionBloc<T> implements AsyncDisposable {
   CollectionState<T> get currentState =>
       _statesController.valueOrNull ?? initialState;
 
-  final OnError? _onError;
+  final ErrorCallback? _onError;
 
   final int? totalLimit;
   final List<AbstractClientFilter<T>> clientFilters;
@@ -29,7 +28,7 @@ abstract class CollectionBloc<T> implements AsyncDisposable {
 
   CollectionBloc({
     this.clientFilters = const [],
-    OnError? onError,
+    ErrorCallback? onError,
     this.totalLimit,
   }) : _onError = onError;
 

@@ -3,9 +3,9 @@ import 'package:meta/meta.dart';
 import 'package:model_fetch/model_fetch.dart';
 
 abstract class FirestoreLazyLoadBloc<T> extends LazyLoadBloc<T> {
-  final Query<T> query;
+  final Query<Future<T>> query;
 
-  DocumentSnapshot<T>? _lastDocument;
+  DocumentSnapshot<Future<T>>? _lastDocument;
 
   FirestoreLazyLoadBloc({
     required this.query,
@@ -14,7 +14,7 @@ abstract class FirestoreLazyLoadBloc<T> extends LazyLoadBloc<T> {
     super.totalLimit,
   });
 
-  Query<T> getStartAtQuery() {
+  Query<Future<T>> getStartAtQuery() {
     return _lastDocument == null
         ? query
         : query.startAfterDocument(_lastDocument!);
@@ -22,7 +22,7 @@ abstract class FirestoreLazyLoadBloc<T> extends LazyLoadBloc<T> {
 
   @protected
   // ignore: use_setters_to_change_properties
-  void setLastDocument(DocumentSnapshot<T>? doc) {
+  void setLastDocument(DocumentSnapshot<Future<T>>? doc) {
     _lastDocument = doc;
   }
 }
