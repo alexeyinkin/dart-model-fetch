@@ -1,3 +1,7 @@
+## 0.6.0-6.dev
+
+* Add `FirestoreModel.subcollectionsJson`.
+
 ## 0.6.0-5.dev
 
 * `withConverter()` changed from `T` to `Future<T>`.
