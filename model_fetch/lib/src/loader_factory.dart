@@ -171,6 +171,23 @@ abstract class LoaderFactory<
     }
   }
 
+  /// Empties all frozen loaders but not disposes them.
+  ///
+  /// This causes the list loaders to reload the data when asked for.
+  /// Single-object loaders are reloaded immediately
+  /// because they are not designed to await a signal to load.
+  Future<void> clearFrozenLoaders() async {
+    for (final loader in _frozenByIdBlocs.values) {
+      loader.reload();
+    }
+
+    for (final loader in _frozenModelByFilterBlocs.values) {
+      loader.reload();
+    }
+
+    await Future.wait(_frozenLazyLoadBlocs.values.map((l) => l.clear()));
+  }
+
   /// Deletes all loaders.
   Future<void> clear() async {
     await Future.wait([

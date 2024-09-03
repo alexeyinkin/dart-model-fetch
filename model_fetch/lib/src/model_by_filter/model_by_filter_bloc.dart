@@ -47,6 +47,8 @@ abstract class ModelByFilterBloc<
   Future<void> dispose() async {
     await _statesController.close();
   }
+
+  void reload();
 }
 
 class ModelByFilterState<I, T extends WithId<I>> {

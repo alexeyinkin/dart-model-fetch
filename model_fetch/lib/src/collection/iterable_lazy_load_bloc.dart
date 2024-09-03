@@ -13,7 +13,7 @@ class IterableLazyLoadBloc<T> extends LazyLoadBloc<T> {
   bool _hasMore = true;
   final _items = <T>[];
   LoadStatus _loadStatus = LoadStatus.notTried;
-  late final _iterator = iterable.iterator;
+  late Iterator<T> _iterator = iterable.iterator;
 
   IterableLazyLoadBloc({
     required this.iterable,
@@ -51,5 +51,13 @@ class IterableLazyLoadBloc<T> extends LazyLoadBloc<T> {
     }
     _loadStatus = LoadStatus.ok;
     pushOutput();
+  }
+
+  @override
+  Future<void> clear() async {
+    _items.clear();
+    _hasMore = true;
+    _loadStatus = LoadStatus.notTried;
+    _iterator = iterable.iterator;
   }
 }

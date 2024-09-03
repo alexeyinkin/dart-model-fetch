@@ -71,6 +71,10 @@ abstract class CollectionBloc<T> implements AsyncDisposable {
   Future<void> dispose() async {
     await _statesController.close();
   }
+
+  /// Clears the local state and makes the loader reload the data when
+  /// asked for.
+  Future<void> clear();
 }
 
 class CollectionState<T> {

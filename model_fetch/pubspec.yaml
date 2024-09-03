@@ -1,6 +1,6 @@
 name: model_fetch
 description: A lazy load BLoC wrapper for your data source.
-version: 0.6.0-5.dev
+version: 0.6.0-7.dev
 repository: https://github.com/alexeyinkin/dart-model-fetch
 
 environment:

@@ -1,3 +1,9 @@
+## 0.6.0-7.dev
+
+* **BREAKING:** Added abstract `CollectionBloc.clear()`.
+* **BREAKING:** Added abstract `ModelByFilterBloc.reload()`.
+* Added `LoaderFactory.clearFrozenLoaders()`.
+
 ## 0.6.0-5.dev
 
 * **BREAKING:** Added abstract `ModelByIdBloc.get()`.

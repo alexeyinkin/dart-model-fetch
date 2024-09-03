@@ -28,4 +28,9 @@ class EmptyLazyLoadBloc<T> extends LazyLoadBloc<T> {
     _tried = true;
     pushOutput();
   }
+
+  @override
+  Future<void> clear() async {
+    // No-op.
+  }
 }
