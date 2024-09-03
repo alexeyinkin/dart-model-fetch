@@ -43,6 +43,6 @@ class LazyLoadBlocTrailingWidget extends StatelessWidget {
   }
 
   Widget _defaultBuilder(BuildContext context, CollectionState state) {
-    return Container();
+    return const SizedBox(width: 1, height: 1);
   }
 }

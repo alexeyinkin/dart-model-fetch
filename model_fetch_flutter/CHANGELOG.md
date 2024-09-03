@@ -1,3 +1,7 @@
+## 0.6.0-7.dev
+
+* Made the default builder of `LazyLoadBlocTrailingWidget` trigger loading the data.
+
 ## 0.6.0-5.dev
 
 * Support [model_fetch](https://pub.dev/packages/model_fetch) v0.6.0-5.dev.
