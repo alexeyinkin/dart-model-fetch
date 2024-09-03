@@ -1,9 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
 import 'package:model_fetch/model_fetch.dart';
 import 'package:model_interfaces/model_interfaces.dart';
 
 import 'enums/query_source_type.dart';
 import 'loader_factories/abstract.dart';
+import 'util.dart';
 
 abstract class QueryBuilder<
 //
@@ -25,19 +27,42 @@ abstract class QueryBuilder<
 
   String get collectionName => loaderFactory.defaultCollectionName;
 
-  Query<Map<String, dynamic>> get collectionGroupQuery =>
+  Query<Map<String, dynamic>> get _mapCollectionGroupQuery =>
       FirebaseFirestore.instance.collectionGroup(collectionName);
 
-  CollectionReference<Map<String, dynamic>> get collectionReference =>
+  Query<Future<T>> get collectionGroupQuery =>
+      _mapCollectionGroupQuery.withConverter(
+        fromFirestore: _fromFirestore,
+        toFirestore: _toFirestore,
+      );
+
+  CollectionReference<Map<String, dynamic>> get mapCollectionReference =>
       loaderFactory.defaultCollectionReference;
 
-  Query<Map<String, dynamic>> get _emptyMapQuery => switch (sourceType) {
+  CollectionReference<Future<T>> get collectionReference =>
+      mapCollectionReference.withConverter(
+        fromFirestore: _fromFirestore,
+        toFirestore: _toFirestore,
+      );
+
+  Query<Future<T>> get emptyQuery => switch (sourceType) {
         QuerySourceType.collection => collectionReference,
         QuerySourceType.collectionGroup => collectionGroupQuery,
       };
 
-  Query<Future<T>> get emptyQuery => _emptyMapQuery.withConverter(
-        fromFirestore: loaderFactory.fromFirestoreBase,
-        toFirestore: (_, __) => throw UnimplementedError(),
-      );
+  Future<T> _fromFirestore(
+    DocumentSnapshot<Map<String, dynamic>> snapshot,
+    SnapshotOptions? options,
+  ) =>
+      loaderFactory.fromFirestoreBase(snapshot, options);
+
+  Map<String, Object?> _toFirestore(Future<T> future, SetOptions? options) {
+    if (future is! SynchronousFuture) {
+      throw ArgumentError('Expected SynchronousFuture, $future given.');
+    }
+
+    final value = (future as SynchronousFuture<T>).value;
+
+    return (value as dynamic).toJson();
+  }
 }

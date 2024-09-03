@@ -66,4 +66,9 @@ class FirestoreLiveSingleDocumentCollectionBloc<T extends WithId<String>>
     await _snapshotSubscription?.cancel();
     await super.dispose();
   }
+
+  @override
+  Future<void> clear() async {
+    // No-op, the document is live.
+  }
 }

@@ -1,3 +1,10 @@
+## 0.6.0-7.dev
+
+* **BREAKING:** Made `QueryBuilder.collectionReference` and `.collectionGroupQuery` return the objects with `withCoverter`.
+  Added `.mapCollectionReference` and `.mapCollectionGroupQuery` for the old versions without it.
+* Support `model_fetch` 0.6.0-7.dev.
+* Add `FirestoreModel.prefix` and `.suffix` to the macro to allow generating multiple loader factories for a model.
+
 ## 0.6.0-6.dev
 
 * Add `FirestoreModel.subcollectionsJson`.

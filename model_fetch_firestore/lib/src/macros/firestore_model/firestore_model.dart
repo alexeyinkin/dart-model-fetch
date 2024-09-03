@@ -14,12 +14,16 @@ final _loaderFactoryLibrary = Uri.parse(
 );
 
 macro class FirestoreModel implements ClassTypesMacro, ClassDeclarationsMacro {
+  final String prefix;
   final QuerySourceType querySourceType;
   final String subcollectionsJson;
+  final String suffix;
 
   const FirestoreModel({
+    this.prefix = '',
     this.querySourceType = QuerySourceType.collection,
     this.subcollectionsJson = '',
+    this.suffix = '',
   });
 
   Map<String, String> get subcollections {
@@ -409,7 +413,7 @@ macro class FirestoreModel implements ClassTypesMacro, ClassDeclarationsMacro {
         '  @', i.override, '\n',
         '  ', i.CollectionReference,
         '<', i.Map, '<', i.String, ', ', i.dynamic, '>> ',
-        'get collectionReference => ',
+        'get mapCollectionReference => ',
         i.FirebaseFirestore, '.instance',
         '.collection("$name")',
         '.doc(filter.${name}Id)',
@@ -421,18 +425,18 @@ macro class FirestoreModel implements ClassTypesMacro, ClassDeclarationsMacro {
   }
 
   String _getFilterName(ClassDeclaration clazz, {String? subcollection}) {
-    return '${clazz.identifier.name}${subcollection ?? ''}Filter';
+    return '$prefix${clazz.identifier.name}$suffix${subcollection ?? ''}Filter';
   }
 
   String _getLoaderFactoryName(
     ClassDeclaration clazz, {
     String? subcollection,
   }) {
-    return '${clazz.identifier.name}${subcollection ?? ''}FirestoreLoaderFactory';
+    return '$prefix${clazz.identifier.name}$suffix${subcollection ?? ''}FirestoreLoaderFactory';
   }
 
   String _getQueryBuilderName(ClassDeclaration clazz, {String? subcollection}) {
-    return '${clazz.identifier.name}${subcollection ?? ''}QueryBuilder';
+    return '$prefix${clazz.identifier.name}$suffix${subcollection ?? ''}QueryBuilder';
   }
 
   List<Object> _getBuild(_IntrospectionData intr) {
@@ -504,6 +508,8 @@ class _ResolvedIdentifiers {
 }
 
 macro class FirestoreCollectionGroupModel extends FirestoreModel {
-  const FirestoreCollectionGroupModel()
-      : super(querySourceType: QuerySourceType.collectionGroup);
+  const FirestoreCollectionGroupModel({
+    super.prefix,
+    super.suffix,
+  }) : super(querySourceType: QuerySourceType.collectionGroup);
 }

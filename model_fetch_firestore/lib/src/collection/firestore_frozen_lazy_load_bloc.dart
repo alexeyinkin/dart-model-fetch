@@ -114,13 +114,7 @@ class FirestoreFrozenLazyLoadBloc<T> extends FirestoreLazyLoadBloc<T> {
   }
 
   Future<void> clearAndLoadFirstPage() async {
-    if (_status == LoadStatus.loading) return;
-
-    _objects.clear();
-    _hasMore = true;
-    _status = LoadStatus.notTried;
-    setLastDocument(null);
-    pushOutput();
+    await clear();
     await _loadMore();
   }
 
@@ -132,5 +126,19 @@ class FirestoreFrozenLazyLoadBloc<T> extends FirestoreLazyLoadBloc<T> {
     _status = LoadStatus.notTried;
     setLastDocument(null);
     await _loadMore();
+  }
+
+  @override
+  Future<void> clear() async {
+    if (_status == LoadStatus.loading) {
+      // TODO: Kill the operation in progress.
+      return;
+    }
+
+    _objects.clear();
+    _hasMore = true;
+    _status = LoadStatus.notTried;
+    setLastDocument(null);
+    pushOutput();
   }
 }

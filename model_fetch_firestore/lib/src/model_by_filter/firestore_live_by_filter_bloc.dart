@@ -38,4 +38,9 @@ class FirestoreLiveByFilterBloc<T extends WithId<String>>
     await _subscription?.cancel();
     await super.dispose();
   }
+
+  @override
+  void reload() {
+    // No-op, the model is live.
+  }
 }
