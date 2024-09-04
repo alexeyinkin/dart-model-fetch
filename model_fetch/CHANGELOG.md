@@ -1,12 +1,9 @@
-## 0.6.0-7.dev
+## 0.6.0
 
 * **BREAKING:** Added abstract `CollectionBloc.clear()`.
 * **BREAKING:** Added abstract `ModelByFilterBloc.reload()`.
-* Added `LoaderFactory.clearFrozenLoaders()`.
-
-## 0.6.0-5.dev
-
 * **BREAKING:** Added abstract `ModelByIdBloc.get()`.
+* Added `LoaderFactory.clearFrozenLoaders()`.
 * Support [rxdart](https://pub.dev/packages/rxdart) 0.28.
 
 ## 0.5.6

@@ -8,6 +8,6 @@ abstract class LazyLoadBloc<T> extends CollectionBloc<T> {
   });
 
   Future<void> loadAllIfCan();
-  
+
   Future<void> loadMoreIfCan();
 }
