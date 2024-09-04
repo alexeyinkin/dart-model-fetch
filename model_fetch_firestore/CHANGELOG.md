@@ -1,37 +1,19 @@
-## 0.6.0-7.dev
+## 0.6.0
 
 * **BREAKING:** Made `QueryBuilder.collectionReference` and `.collectionGroupQuery` return the objects with `withCoverter`.
   Added `.mapCollectionReference` and `.mapCollectionGroupQuery` for the old versions without it.
 * Support `model_fetch` 0.6.0-7.dev.
 * Add `FirestoreModel.prefix` and `.suffix` to the macro to allow generating multiple loader factories for a model.
-
-## 0.6.0-6.dev
-
 * Add `FirestoreModel.subcollectionsJson`.
-
-## 0.6.0-5.dev
-
 * `withConverter()` changed from `T` to `Future<T>`.
 * Added `onError` and `dispose()` to `FirestoreLiveByIdBloc` and `FirestoreLiveByFilterBloc`.
 * Moved the source of truth of the default collection from `QueryBuilder` to `AbstractFirestoreLoaderFactory`.
-
-## 0.6.0-4.dev
-
 * Added `id` to filters.
 * Added `QueryBuilder.sourceType`.
-
-## 0.6.0-3.dev
-
 * Make filter constructors const.
-
-## 0.6.0-2.dev
-
 * Added `QueryBuilder.filter`, `.loaderFactory`, `.collectionName`, `.collectionReference`, `.emptyQuery`.
 * Added `F` type parameter to `QueryBuilder`.
 * Creating an unnamed constructor for a `Filter` class.
-
-## 0.6.0-1.dev
-
 * Added `@FirestoreModel` macro.
 * `AbstractFirestoreLoaderFactory.onError` made non-abstract, it prints the error.
 
