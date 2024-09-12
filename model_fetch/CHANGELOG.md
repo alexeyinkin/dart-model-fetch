@@ -1,3 +1,8 @@
+## 0.6.1
+
+* Added `AbstractFilter.fields`.
+* Deprecated `AbstractFilter.toJson()` and `.hash`.
+
 ## 0.6.0
 
 * **BREAKING:** Added abstract `CollectionBloc.clear()`.
