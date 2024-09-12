@@ -1,13 +1,12 @@
-// ignore_for_file: non_constant_identifier_names
-
 import 'dart:async';
 import 'dart:convert';
 
 import 'package:common_macros/common_macros.dart';
-import 'package:macro_util/macro_util.dart';
 import 'package:macros/macros.dart';
 
 import '../../enums/query_source_type.dart';
+import 'filter_param_visitors/query_builder_build.dart';
+import 'introspection_data.dart';
 
 final _loaderFactoryLibrary = Uri.parse(
   'package:model_fetch_firestore/src/loader_factories/abstract.dart',
@@ -75,7 +74,12 @@ macro class FirestoreModel implements ClassTypesMacro, ClassDeclarationsMacro {
     ClassDeclaration clazz,
     MemberDeclarationBuilder builder,
   ) async {
-    final intr = await _introspect(clazz, builder);
+    final intr = await introspect(
+      clazz,
+      builder,
+      prefix: prefix,
+      suffix: suffix,
+    );
 
     await _buildFilter(intr, builder);
     _buildLoaderFactory(intr, builder);
@@ -89,7 +93,7 @@ macro class FirestoreModel implements ClassTypesMacro, ClassDeclarationsMacro {
   }
 
   Future<void> _buildFilter(
-    _IntrospectionData intr,
+    IntrospectionData intr,
     MemberDeclarationBuilder builder,
   ) async {
     final filterName = _getFilterName(intr.clazz);
@@ -109,20 +113,51 @@ macro class FirestoreModel implements ClassTypesMacro, ClassDeclarationsMacro {
       DeclarationCode.fromParts([
         //
         'augment class $filterName extends ', i.AbstractFilter, ' {\n',
-        '  final ', i.String, '? id;',
-        ...await const Constructor(
+
+        for (final param in intr.filterParams) ...[
+          '  final ',
+          param.typeDeclaration.identifier,
+          '? ',
+          param.name,
+          ';\n',
+        ],
+
+        ...await Constructor(
           isConst: true,
           extraNamedParameters: [
-            ['this.id'],
+            for (final param in intr.filterParams) ['this.${param.name}'],
           ],
+          // extraNamedParameters: [
+          //   ['this.id', for (final param in intr.filterParams) 'this.${param.name}'],
+          // ],
         ).getParts(clazz, builder),
+
+        '  @', i.override, '\n',
+        i.bool, ' operator ==(', i.Object, ' other) {\n',
+        '  if (other is! $filterName) return false;\n',
+        // for (final field in intr.filterManualFields.values)
+        //   '  if (other.${field.name} != ${field.name}) return false;\n',
+        '  for (var i = fields.length; --i >= 0; ) {\n',
+        '    if (fields[i] != other.fields[i]) return false;\n',
+        '  }\n',
+        for (final param in intr.filterParams)
+          '  if (other.${param.name} != ${param.name}) return false;\n',
+        '  return true;\n',
+        '  }\n',
+
+        '  @', i.override, '\n',
+        i.int, ' get hashCode => ', i.Object, '.hashAll([',
+        // for (final field in intr.filterManualFields.values) '${field.name},\n',
+        '  ...fields,',
+        for (final param in intr.filterParams) '${param.name},\n',
+        '  ]);',
         '}\n',
       ]),
     );
   }
 
   Future<void> _buildSubcollectionFilter(
-    _IntrospectionData intr,
+    IntrospectionData intr,
     MemberDeclarationBuilder builder, {
     required String subcollection,
   }) async {
@@ -156,7 +191,7 @@ macro class FirestoreModel implements ClassTypesMacro, ClassDeclarationsMacro {
   }
 
   void _buildLoaderFactory(
-    _IntrospectionData intr,
+    IntrospectionData intr,
     MemberDeclarationBuilder builder,
   ) {
     builder.declareInLibrary(
@@ -178,7 +213,7 @@ macro class FirestoreModel implements ClassTypesMacro, ClassDeclarationsMacro {
   }
 
   void _buildSubcollectionLoaderFactory(
-    _IntrospectionData intr,
+    IntrospectionData intr,
     MemberDeclarationBuilder builder, {
     required String subcollection,
   }) {
@@ -221,7 +256,7 @@ macro class FirestoreModel implements ClassTypesMacro, ClassDeclarationsMacro {
   }
 
   List<Object> _getLoaderFactoryInstance(
-    _IntrospectionData intr, {
+    IntrospectionData intr, {
     String? subcollection,
   }) {
     final factoryName = _getLoaderFactoryName(
@@ -236,7 +271,7 @@ macro class FirestoreModel implements ClassTypesMacro, ClassDeclarationsMacro {
   }
 
   List<Object> _getCreateQueryBuilder(
-    _IntrospectionData intr, {
+    IntrospectionData intr, {
     String? subcollection,
   }) {
     final filterName = _getFilterName(intr.clazz, subcollection: subcollection);
@@ -265,7 +300,7 @@ macro class FirestoreModel implements ClassTypesMacro, ClassDeclarationsMacro {
     ];
   }
 
-  List<Object> _getFromFirestore(_IntrospectionData intr) {
+  List<Object> _getFromFirestore(IntrospectionData intr) {
     final name = intr.clazz.identifier.name;
     final i = intr.ids;
 
@@ -314,7 +349,7 @@ macro class FirestoreModel implements ClassTypesMacro, ClassDeclarationsMacro {
   }
 
   List<Object> _getSubcollectionFromFirestore(
-    _IntrospectionData intr, {
+    IntrospectionData intr, {
     required String subcollection,
   }) {
     final i = intr.ids;
@@ -331,7 +366,7 @@ macro class FirestoreModel implements ClassTypesMacro, ClassDeclarationsMacro {
     ];
   }
 
-  List<Object> _getDefaultCollectionName(_IntrospectionData intr) {
+  List<Object> _getDefaultCollectionName(IntrospectionData intr) {
     final name = intr.clazz.identifier.name;
     final i = intr.ids;
 
@@ -342,7 +377,7 @@ macro class FirestoreModel implements ClassTypesMacro, ClassDeclarationsMacro {
     ];
   }
 
-  List<Object> _getDefaultCollectionNameUnimplemented(_IntrospectionData intr) {
+  List<Object> _getDefaultCollectionNameUnimplemented(IntrospectionData intr) {
     final i = intr.ids;
 
     return [
@@ -353,7 +388,7 @@ macro class FirestoreModel implements ClassTypesMacro, ClassDeclarationsMacro {
     ];
   }
 
-  void _buildQueryBuilder(_IntrospectionData intr, DeclarationBuilder builder) {
+  void _buildQueryBuilder(IntrospectionData intr, DeclarationBuilder builder) {
     final name = intr.clazz.identifier.name;
     final filterName = _getFilterName(intr.clazz);
     final builderName = _getQueryBuilderName(intr.clazz);
@@ -381,14 +416,14 @@ macro class FirestoreModel implements ClassTypesMacro, ClassDeclarationsMacro {
         '  @', i.override, '\n',
         '  ', i.String, ' get collectionName => "$name";\n',
 
-        ..._getBuild(intr),
+        ...QueryBuilderBuildGenerator(intr).generate(),
         '}\n',
       ]),
     );
   }
 
   void _buildSubcollectionQueryBuilder(
-    _IntrospectionData intr,
+    IntrospectionData intr,
     DeclarationBuilder builder, {
     required String subcollection,
   }) {
@@ -425,7 +460,12 @@ macro class FirestoreModel implements ClassTypesMacro, ClassDeclarationsMacro {
   }
 
   String _getFilterName(ClassDeclaration clazz, {String? subcollection}) {
-    return '$prefix${clazz.identifier.name}$suffix${subcollection ?? ''}Filter';
+    return getFilterName(
+      clazz,
+      subcollection: subcollection,
+      prefix: prefix,
+      suffix: suffix,
+    );
   }
 
   String _getLoaderFactoryName(
@@ -438,73 +478,6 @@ macro class FirestoreModel implements ClassTypesMacro, ClassDeclarationsMacro {
   String _getQueryBuilderName(ClassDeclaration clazz, {String? subcollection}) {
     return '$prefix${clazz.identifier.name}$suffix${subcollection ?? ''}QueryBuilder';
   }
-
-  List<Object> _getBuild(_IntrospectionData intr) {
-    final i = intr.ids;
-
-    return [
-      //
-      'void _build() {\n',
-      '  if (filter.id != null) {\n',
-      '    _query = query.where(\n',
-      '      ', i.FieldPath, '.documentId,\n',
-      '      isEqualTo: filter.id!\n',
-      '    );\n',
-      '  }\n',
-      // TODO: Filter with other fields in the filter.
-      '}\n',
-    ];
-  }
-}
-
-Future<_IntrospectionData> _introspect(
-  ClassDeclaration clazz,
-  MemberDeclarationBuilder builder,
-) async {
-  final (ids, fields) = await (
-    _ResolvedIdentifiers.resolve(builder),
-    builder.introspectFields(clazz),
-  ).wait;
-
-  return _IntrospectionData(
-    clazz: clazz,
-    fields: fields,
-    ids: ids,
-  );
-}
-
-class _IntrospectionData {
-  final ClassDeclaration clazz;
-
-  final Map<String, FieldIntrospectionData> fields;
-
-  final _ResolvedIdentifiers ids;
-
-  _IntrospectionData({
-    required this.clazz,
-    required this.fields,
-    required this.ids,
-  });
-}
-
-@ResolveIdentifiers()
-class _ResolvedIdentifiers {
-  final Identifier AbstractFilter;
-  final Identifier AbstractFirestoreLoaderFactory;
-  final Identifier CollectionReference;
-  final Identifier DocumentSnapshot;
-  final Identifier FieldPath;
-  final Identifier FirebaseFirestore;
-  final Identifier Future;
-  final Identifier Map;
-  final Identifier Query;
-  final Identifier QueryBuilder;
-  final Identifier QuerySourceType;
-  final Identifier SnapshotOptions;
-  final Identifier String;
-  final Identifier UnimplementedError;
-  final Identifier dynamic;
-  final Identifier override;
 }
 
 macro class FirestoreCollectionGroupModel extends FirestoreModel {

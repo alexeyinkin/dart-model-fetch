@@ -1,10 +1,14 @@
+## 0.6.1
+
+* Generating filter parameters from the model String fields, filtering by them in `QueryBuilder`.
+
 ## 0.6.0
 
 * **BREAKING:** Made `QueryBuilder.collectionReference` and `.collectionGroupQuery` return the objects with `withCoverter`.
   Added `.mapCollectionReference` and `.mapCollectionGroupQuery` for the old versions without it.
 * Support `model_fetch` 0.6.0-7.dev.
-* Add `FirestoreModel.prefix` and `.suffix` to the macro to allow generating multiple loader factories for a model.
-* Add `FirestoreModel.subcollectionsJson`.
+* Added `FirestoreModel.prefix` and `.suffix` to the macro to allow generating multiple loader factories for a model.
+* Added `FirestoreModel.subcollectionsJson`.
 * `withConverter()` changed from `T` to `Future<T>`.
 * Added `onError` and `dispose()` to `FirestoreLiveByIdBloc` and `FirestoreLiveByFilterBloc`.
 * Moved the source of truth of the default collection from `QueryBuilder` to `AbstractFirestoreLoaderFactory`.
