@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use_from_same_package
+
 import 'package:meta/meta.dart';
 import 'package:model_interfaces/model_interfaces.dart';
 import 'package:rxdart/rxdart.dart';
@@ -5,28 +7,33 @@ import 'package:rxdart/rxdart.dart';
 import '../interfaces/async_disposable.dart';
 import '../load_status.dart';
 
-abstract class ModelByIdBloc<
+@Deprecated('Renamed to ModelLoaderByFilter')
+typedef ModelByFilterBloc<I, T extends WithId<I>> = ModelLoaderByFilter<I, T>;
+
+abstract class ModelLoaderByFilter<
     I,
     T extends WithId<I>
 //
     > implements AsyncDisposable {
-  final I id;
+  final _statesController = BehaviorSubject<ModelByFilterState<I, T>>();
 
-  final _statesController = BehaviorSubject<ModelByIdState<I, T>>();
+  @Deprecated('Use model and status directly.')
+  Stream<ModelByFilterState<I, T>> get states => _statesController.stream;
 
-  Stream<ModelByIdState<I, T>> get states => _statesController.stream;
+  ModelByFilterState<I, T> _state;
 
-  ModelByIdState<I, T> _state;
-
-  ModelByIdBloc({
-    required this.id,
-  }) : _state = ModelByIdState(
+  ModelLoaderByFilter()
+      : _state = ModelByFilterState(
           model: null,
           status: LoadStatus.notTried,
         );
 
+  T? get model;
+
+  LoadStatus get status;
+
   @protected
-  void emitStateIfChanged(ModelByIdState<I, T> state) {
+  void emitStateIfChanged(ModelByFilterState<I, T> state) {
     if (state.status == LoadStatus.ok) {
       if (state.model == _state.model) return;
       emitState(state);
@@ -40,7 +47,7 @@ abstract class ModelByIdBloc<
   }
 
   @protected
-  void emitState(ModelByIdState<I, T> state) {
+  void emitState(ModelByFilterState<I, T> state) {
     _statesController.add(state);
     _state = state;
   }
@@ -51,17 +58,16 @@ abstract class ModelByIdBloc<
     await _statesController.close();
   }
 
-  /// Loads the model if it is not loaded yet, and returns it or null on error.
-  Future<T?> get();
-
   void reload();
 }
 
-class ModelByIdState<I, T extends WithId<I>> {
+@Deprecated('Use model and status directly from the loader.')
+class ModelByFilterState<I, T extends WithId<I>> {
   final T? model;
   final LoadStatus status;
 
-  ModelByIdState({
+  @Deprecated('Use model and status directly from the loader.')
+  ModelByFilterState({
     required this.model,
     required this.status,
   });

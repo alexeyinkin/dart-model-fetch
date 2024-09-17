@@ -1,3 +1,13 @@
+## 0.6.2
+
+* Added `.asListenable()` extension methods to `ListLoader`, `ModelLoaderByFilter`, and `ModelLoaderById`.
+* Added `LoaderValueNotifier`, `LoaderValueListNotifier`.
+* Added `LazyLoadListView`, `LoaderDropdownButton`, `LoaderSelectableListView`,
+  `LoaderSelectablePopUpListView`, `ModelCapsuleWidget`, `ModelListItem`.
+* Added `ListLazyLoaderAutoLoadMoreWidget`, deprecated `BlocAutoLoadMoreWidget` in favor of it.
+* Added `ListLazyLoaderTrailingWidget`, deprecated `LazyLoadBlocTrailingWidget` in favor of it.
+* Deprecated `CollectionBlocBuilder` in favor of `ListenableBuilder` with `.asListenable()`.
+
 ## 0.6.0
 
 * Made the default builder of `LazyLoadBlocTrailingWidget` trigger loading the data.

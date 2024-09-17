@@ -2,12 +2,15 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:meta/meta.dart';
 import 'package:model_fetch/model_fetch.dart';
 
-abstract class FirestoreLazyLoadBloc<T> extends LazyLoadBloc<T> {
+@Deprecated('Renamed to FirestoreLazyLoader')
+typedef FirestoreLazyLoadBloc<T> = FirestoreListLazyLoader<T>;
+
+abstract class FirestoreListLazyLoader<T> extends ListLazyLoader<T> {
   final Query<Future<T>> query;
 
   DocumentSnapshot<Future<T>>? _lastDocument;
 
-  FirestoreLazyLoadBloc({
+  FirestoreListLazyLoader({
     required this.query,
     super.clientFilters,
     super.onError,

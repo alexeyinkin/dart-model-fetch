@@ -1,38 +1,40 @@
 import '../load_status.dart';
-import 'collection_bloc.dart';
-import 'lazy_load_bloc.dart';
+import 'list_lazy_loader.dart';
 
-/// A [LazyLoadBloc] that feeds from [iterable] synchronously in chunks
+@Deprecated('Renamed to IterableLazyLoader')
+typedef IterableLazyLoadBloc<T> = IterableLazyLoader<T>;
+
+/// A [ListLazyLoader] that feeds from [iterable] synchronously in chunks
 /// of [pageSize].
 ///
 /// Good for mocks, local synchronous file system reads, etc.
-class IterableLazyLoadBloc<T> extends LazyLoadBloc<T> {
+class IterableLazyLoader<T> extends ListLazyLoader<T> {
   final Iterable<T> iterable;
   final int pageSize;
 
+  @override
+  bool get hasMore => _hasMore;
+
   bool _hasMore = true;
-  final _items = <T>[];
+
+  @override
+  final items = <T>[];
+
+  @override
+  LoadStatus get status => _loadStatus;
   LoadStatus _loadStatus = LoadStatus.notTried;
+
   late Iterator<T> _iterator = iterable.iterator;
 
-  IterableLazyLoadBloc({
+  IterableLazyLoader({
     required this.iterable,
     this.pageSize = 1,
   });
 
   @override
-  CollectionState<T> createState() {
-    return CollectionState(
-      items: _items,
-      hasMore: _hasMore,
-      status: _loadStatus,
-    );
-  }
-
-  @override
   Future<void> loadAllIfCan() async {
     while (_iterator.moveNext()) {
-      _items.add(_iterator.current);
+      items.add(_iterator.current);
     }
     _hasMore = false;
     _loadStatus = LoadStatus.ok;
@@ -47,7 +49,7 @@ class IterableLazyLoadBloc<T> extends LazyLoadBloc<T> {
         break;
       }
 
-      _items.add(_iterator.current);
+      items.add(_iterator.current);
     }
     _loadStatus = LoadStatus.ok;
     pushOutput();
@@ -55,7 +57,7 @@ class IterableLazyLoadBloc<T> extends LazyLoadBloc<T> {
 
   @override
   Future<void> clear() async {
-    _items.clear();
+    items.clear();
     _hasMore = true;
     _loadStatus = LoadStatus.notTried;
     _iterator = iterable.iterator;

@@ -7,14 +7,28 @@ import 'package:model_interfaces/model_interfaces.dart';
 
 import '../util.dart';
 
-class FirestoreLiveByFilterBloc<T extends WithId<String>>
-    extends ModelByFilterBloc<String, T> {
+@Deprecated('Renamed to FirestoreLiveModelLoaderByFilter')
+typedef FirestoreLiveByFilterBloc<T extends WithId<String>>
+    = FirestoreLiveModelLoaderByFilter<T>;
+
+class FirestoreLiveModelLoaderByFilter<T extends WithId<String>>
+    extends ModelLoaderByFilter<String, T> {
   final ErrorCallback onError;
   final Query<Future<T>> query;
 
   StreamSubscription? _subscription;
 
-  FirestoreLiveByFilterBloc({
+  @override
+  T? get model => _model;
+
+  T? _model;
+
+  @override
+  LoadStatus get status => _status;
+
+  LoadStatus _status = LoadStatus.notTried;
+
+  FirestoreLiveModelLoaderByFilter({
     required this.onError,
     required this.query,
   }) {
@@ -23,12 +37,14 @@ class FirestoreLiveByFilterBloc<T extends WithId<String>>
   }
 
   Future<void> _onModelChanged(QuerySnapshot<Future<T?>> querySnapshot) async {
-    final model = await querySnapshot.docs.firstOrNull?.data();
+    _model = await querySnapshot.docs.firstOrNull?.data();
+    _status = _model == null ? LoadStatus.error : LoadStatus.ok;
 
     emitStateIfChanged(
+      // ignore: deprecated_member_use
       ModelByFilterState(
-        model: model,
-        status: model == null ? LoadStatus.error : LoadStatus.ok,
+        model: _model,
+        status: _status,
       ),
     );
   }

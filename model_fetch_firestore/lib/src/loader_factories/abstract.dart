@@ -2,9 +2,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:model_fetch/model_fetch.dart';
 import 'package:model_interfaces/model_interfaces.dart';
 
-import '../collection/firestore_frozen_lazy_load_bloc.dart';
-import '../model_by_filter/firestore_live_by_filter_bloc.dart';
-import '../model_by_id/firestore_live_by_id_bloc.dart';
+import '../list/firestore_frozen_list_lazy_loader.dart';
+import '../model_by_filter/firestore_live_model_loader_by_filter.dart';
+import '../model_by_id/firestore_live_model_loader_by_id.dart';
 import '../query_builder.dart';
 
 abstract class AbstractFirestoreLoaderFactory<
@@ -25,7 +25,7 @@ abstract class AbstractFirestoreLoaderFactory<
   );
 
   void onError(Object error, StackTrace trace) {
-    print('Error in ${runtimeType}: $error'); // ignore: avoid_print
+    print('Error in $runtimeType: $error'); // ignore: avoid_print
     print(trace); // ignore: avoid_print
   }
 
@@ -38,8 +38,8 @@ abstract class AbstractFirestoreLoaderFactory<
 
       // ignore: avoid_catches_without_on_clauses
     } catch (error, trace) {
-      // TODO(alexeyinkin): Allow to silence this.
-      print('Error denormalizing object ${snapshot.id}.');
+      // TODO(alexeyinkin): Allow to silence this, https://github.com/alexeyinkin/dart-model-fetch/issues/9
+      print('Error denormalizing object ${snapshot.id}.'); //ignore: avoid_print
       onError(error, trace);
       rethrow;
     }
@@ -53,8 +53,8 @@ abstract class AbstractFirestoreLoaderFactory<
   }
 
   @override
-  FirestoreLiveByIdBloc<T> createLiveByIdBloc(String id) {
-    return FirestoreLiveByIdBloc(
+  FirestoreLiveModelLoaderById<T> createLiveModelLoaderById(String id) {
+    return FirestoreLiveModelLoaderById(
       collectionReference: defaultCollectionReference.withConverter(
         fromFirestore: fromFirestoreBase,
         toFirestore: toFirestore,
@@ -65,38 +65,34 @@ abstract class AbstractFirestoreLoaderFactory<
   }
 
   @override
-  ModelByIdBloc<String, T> createFrozenByIdBloc(String id) {
+  ModelLoaderById<String, T> createFrozenModelLoaderById(String id) {
     throw UnimplementedError();
   }
 
   @override
-  FirestoreLiveByFilterBloc<T> createLiveModelByFilterBloc(F filter) {
+  FirestoreLiveModelLoaderByFilter<T> createLiveModelLoaderByFilter(F filter) {
     final query = createQueryBuilder(filter).query.limit(1);
 
-    return FirestoreLiveByFilterBloc(
+    return FirestoreLiveModelLoaderByFilter(
       onError: onError,
       query: query,
     );
   }
 
   @override
-  ModelByFilterBloc<String, T> createFrozenModelByFilterBloc(F filter) {
-    // TODO(alexeyinkin): Clone FirestoreLiveByFilterBloc but make it frozen.
+  ModelLoaderByFilter<String, T> createFrozenModelLoaderByFilter(F filter) {
+    // TODO(alexeyinkin): Clone FirestoreLiveModelLoaderByFilter, make frozen.
     throw UnimplementedError('TODO');
   }
 
   @override
-  LazyLoadBloc<T> createLiveListBloc(F filter) {
-    // return FirestoreLiveLoader(
-    //   onError: onError,
-    //   query: createQueryBuilder(filter).query,
-    // );
+  ListLazyLoader<T> createLiveListLazyLoader(F filter) {
     throw UnimplementedError();
   }
 
   @override
-  FirestoreFrozenLazyLoadBloc<T> createFrozenListBloc(F filter) {
-    return FirestoreFrozenLazyLoadBloc(
+  FirestoreFrozenListLazyLoader<T> createFrozenListLazyLoader(F filter) {
+    return FirestoreFrozenListLazyLoader(
       onError: onError,
       pageSize: filter.pageSize,
       query: createQueryBuilder(filter).query,

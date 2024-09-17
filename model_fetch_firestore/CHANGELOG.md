@@ -1,3 +1,12 @@
+## 0.6.2
+
+* Handling concurrent loading attempts.
+* Renamed `FirestoreLazyLoadBloc` to `FirestoreListLazyLoader`.
+* Renamed `FirestoreFrozenLazyLoadBloc` to `FirestoreFrozenListLazyLoader`.
+* Renamed `FirestoreLiveSingleDocumentCollectionBloc` to `FirestoreLiveSingleDocumentListLoader`.
+* Renamed `FirestoreLiveByFilterBloc` to `FirestoreLiveModelLoaderByFilter`.
+* Renamed `FirestoreLiveByIdBloc` to `FirestoreLiveModelLoaderById`.
+
 ## 0.6.1
 
 * Generating filter parameters from the model String fields, filtering by them in `QueryBuilder`.

@@ -1,19 +1,29 @@
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:model_fetch/model_fetch.dart';
 
-import 'firestore_lazy_load_bloc.dart';
+import 'firestore_list_lazy_loader.dart';
 
-class FirestoreFrozenLazyLoadBloc<T> extends FirestoreLazyLoadBloc<T> {
+@Deprecated('Renamed to FirestoreFrozenListLazyLoader')
+typedef FirestoreFrozenLazyLoadBloc<T> = FirestoreFrozenListLazyLoader<T>;
+
+class FirestoreFrozenListLazyLoader<T> extends FirestoreListLazyLoader<T> {
   final int pageSize;
-  final _objects = <T>[];
   bool _hasMore = true;
   LoadStatus _status = LoadStatus.notTried;
+  Completer<void>? _currentCallCompleter;
 
+  @override
   bool get hasMore => _hasMore;
 
+  @override
+  final items = <T>[];
+
+  @override
   LoadStatus get status => _status;
 
-  FirestoreFrozenLazyLoadBloc({
+  FirestoreFrozenListLazyLoader({
     required this.pageSize,
     required super.query,
     super.clientFilters,
@@ -23,43 +33,37 @@ class FirestoreFrozenLazyLoadBloc<T> extends FirestoreLazyLoadBloc<T> {
 
   @override
   Future<void> loadAllIfCan() async {
-    if (_status == LoadStatus.loading) return;
-    if (_hasMore) return _pushLoadingAndLoadAll();
-  }
+    await _acquireLoadingLock();
 
-  Future<void> _pushLoadingAndLoadAll() async {
-    _status = LoadStatus.loading;
-    pushOutput();
-    await _loadAll();
+    if (_hasMore) {
+      return _loadAll();
+    }
   }
 
   Future<void> _loadAll() async {
-    _status = LoadStatus.loading;
     try {
       final snapshot = await getStartAtQuery().get();
       await _addQuerySnapshotToList(snapshot);
 
       _hasMore = false;
       _status = LoadStatus.ok;
+      _currentCallCompleter!.complete();
+      _currentCallCompleter = null;
       pushOutput();
 
       // ignore: avoid_catches_without_on_clauses
     } catch (error, trace) {
-      onError(error, trace);
-      _setErrorState();
+      _setErrorState(error, trace);
     }
   }
 
   @override
   Future<void> loadMoreIfCan() async {
-    if (_status == LoadStatus.loading) return;
-    if (_hasMore) return _pushLoadingAndLoadMore();
-  }
+    await _acquireLoadingLock();
 
-  Future<void> _pushLoadingAndLoadMore() async {
-    _status = LoadStatus.loading;
-    pushOutput();
-    await _loadMore();
+    if (_hasMore) {
+      return _loadMore();
+    }
   }
 
   Future<void> _loadMore() async {
@@ -70,12 +74,13 @@ class FirestoreFrozenLazyLoadBloc<T> extends FirestoreLazyLoadBloc<T> {
 
       if (snapshot.docs.length < pageSize) _hasMore = false;
       _status = LoadStatus.ok;
+      _currentCallCompleter!.complete();
+      _currentCallCompleter = null;
       pushOutput();
 
       // ignore: avoid_catches_without_on_clauses
     } catch (error, trace) {
-      onError(error, trace);
-      _setErrorState();
+      _setErrorState(error, trace);
     }
   }
 
@@ -87,9 +92,9 @@ class FirestoreFrozenLazyLoadBloc<T> extends FirestoreLazyLoadBloc<T> {
       return;
     }
 
-    _objects.addAll(await Future.wait(snapshot.docs.map((doc) => doc.data())));
+    items.addAll(await Future.wait(snapshot.docs.map((doc) => doc.data())));
 
-    if (totalLimit != null && _objects.length >= totalLimit!) {
+    if (totalLimit != null && items.length >= totalLimit!) {
       // TODO(alexeyinkin): Remove excess over the limit, https://github.com/alexeyinkin/dart-model-fetch/issues/1
       _hasMore = false;
       return;
@@ -98,19 +103,13 @@ class FirestoreFrozenLazyLoadBloc<T> extends FirestoreLazyLoadBloc<T> {
     setLastDocument(snapshot.docs.last);
   }
 
-  void _setErrorState() {
+  void _setErrorState(Object error, StackTrace trace) {
+    onError(error, trace);
     _hasMore = false;
     _status = LoadStatus.error;
+    _currentCallCompleter!.completeError(error, trace);
+    _currentCallCompleter = null;
     pushOutput();
-  }
-
-  @override
-  CollectionState<T> createState() {
-    return CollectionState<T>(
-      items: _objects,
-      hasMore: _hasMore,
-      status: _status,
-    );
   }
 
   Future<void> clearAndLoadFirstPage() async {
@@ -119,9 +118,12 @@ class FirestoreFrozenLazyLoadBloc<T> extends FirestoreLazyLoadBloc<T> {
   }
 
   Future<void> backgroundReloadFirstPage() async {
-    if (_status == LoadStatus.loading) return;
+    if (_status == LoadStatus.loading) {
+      // TODO(alexeyinkin): Kill the operation in progress, https://github.com/alexeyinkin/dart-model-fetch/issues/6.
+      return;
+    }
 
-    _objects.clear();
+    items.clear();
     _hasMore = true;
     _status = LoadStatus.notTried;
     setLastDocument(null);
@@ -131,14 +133,29 @@ class FirestoreFrozenLazyLoadBloc<T> extends FirestoreLazyLoadBloc<T> {
   @override
   Future<void> clear() async {
     if (_status == LoadStatus.loading) {
-      // TODO: Kill the operation in progress.
+      // TODO(alexeyinkin): Kill the operation in progress, https://github.com/alexeyinkin/dart-model-fetch/issues/6.
       return;
     }
 
-    _objects.clear();
+    items.clear();
     _hasMore = true;
     _status = LoadStatus.notTried;
     setLastDocument(null);
     pushOutput();
+  }
+
+  /// Returns when this thread is ready to call a loading method
+  /// or nothing is left to load.
+  Future<void> _acquireLoadingLock() async {
+    while (_hasMore) {
+      if (_currentCallCompleter != null) {
+        await _currentCallCompleter!.future;
+      } else {
+        _currentCallCompleter = Completer<void>();
+        _status = LoadStatus.loading;
+        pushOutput();
+        return;
+      }
+    }
   }
 }

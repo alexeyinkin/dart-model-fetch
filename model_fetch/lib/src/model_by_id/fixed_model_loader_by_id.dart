@@ -1,30 +1,39 @@
+// ignore_for_file: deprecated_member_use_from_same_package
+
 import 'package:model_interfaces/model_interfaces.dart';
 
 import '../load_status.dart';
-import 'model_by_id_bloc.dart';
+import 'model_loader_by_id.dart';
 
-/// A [ModelByIdBloc] that contains a fixed model.
+typedef FixedModelByIdBloc<I, T extends WithId<I>> = FixedModelLoaderById<I, T>;
+
+/// A [ModelLoaderById] that contains a fixed model.
 ///
 /// Good for mocks, local synchronous file system reads, etc.
-class FixedModelByIdBloc<
+class FixedModelLoaderById<
     I,
     T extends WithId<I>
 //
-    > extends ModelByIdBloc<I, T> {
+    > extends ModelLoaderById<I, T> {
   final T Function() _getter;
+
+  @override
   T model;
 
-  factory FixedModelByIdBloc({
+  @override
+  LoadStatus get status => LoadStatus.ok;
+
+  factory FixedModelLoaderById({
     required T Function() getter,
   }) {
     final model = getter();
-    return FixedModelByIdBloc._(
+    return FixedModelLoaderById._(
       getter: getter,
       model: model,
     );
   }
 
-  FixedModelByIdBloc._({
+  FixedModelLoaderById._({
     required T Function() getter,
     required this.model,
   })  : _getter = getter,

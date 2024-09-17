@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use_from_same_package
+
 import 'package:meta/meta.dart';
 import 'package:rxdart/rxdart.dart';
 
@@ -6,12 +8,17 @@ import '../interfaces/async_disposable.dart';
 import '../load_status.dart';
 import '../util.dart';
 
-/// A local representation of a possibly larger collection.
-abstract class CollectionBloc<T> implements AsyncDisposable {
+@Deprecated('Renamed to ListLoader')
+typedef CollectionBloc<T> = ListLoader<T>;
+
+/// A local representation of a possibly larger list.
+abstract class ListLoader<T> implements AsyncDisposable {
   final _statesController = BehaviorSubject<CollectionState<T>>();
 
+  @Deprecated('Use items, hasMore, and status directly.')
   Stream<CollectionState<T>> get states => _statesController.stream;
 
+  @Deprecated('Use items, hasMore, and status directly.')
   CollectionState<T> get currentState =>
       _statesController.valueOrNull ?? initialState;
 
@@ -26,11 +33,17 @@ abstract class CollectionBloc<T> implements AsyncDisposable {
     status: LoadStatus.notTried,
   );
 
-  CollectionBloc({
+  ListLoader({
     this.clientFilters = const [],
     ErrorCallback? onError,
     this.totalLimit,
   }) : _onError = onError;
+
+  bool get hasMore;
+
+  List<T> get items;
+
+  LoadStatus get status;
 
   void pushOutput() {
     if (_statesController.isClosed) return;
@@ -55,7 +68,13 @@ abstract class CollectionBloc<T> implements AsyncDisposable {
     return state;
   }
 
-  CollectionState<T> createState();
+  @nonVirtual
+  @Deprecated('Use items, hasMore, and status directly.')
+  CollectionState<T> createState() => CollectionState(
+        hasMore: hasMore,
+        items: items,
+        status: status,
+      );
 
   void onError(Object error, StackTrace trace) {
     (_onError ?? _defaultOnError)(error, trace);
@@ -77,6 +96,7 @@ abstract class CollectionBloc<T> implements AsyncDisposable {
   Future<void> clear();
 }
 
+@Deprecated('Use items, hasMore, and status directly from the loader.')
 class CollectionState<T> {
   final List<T> items;
   final bool hasMore;
@@ -84,6 +104,7 @@ class CollectionState<T> {
 
   bool get isTried => status != LoadStatus.notTried;
 
+  @Deprecated('Use items, hasMore, and status directly from the loader.')
   CollectionState({
     required this.items,
     required this.hasMore,

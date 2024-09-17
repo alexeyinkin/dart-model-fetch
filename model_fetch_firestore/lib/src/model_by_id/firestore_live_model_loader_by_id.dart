@@ -7,18 +7,31 @@ import 'package:model_interfaces/model_interfaces.dart';
 
 import '../util.dart';
 
-class FirestoreLiveByIdBloc<T extends WithId<String>>
-    extends ModelByIdBloc<String, T> {
+@Deprecated('Renamed to FirestoreLiveModelLoaderById')
+typedef FirestoreLiveByIdBloc<T extends WithId<String>>
+    = FirestoreLiveModelLoaderById<T>;
+
+class FirestoreLiveModelLoaderById<T extends WithId<String>>
+    extends ModelLoaderById<String, T> {
   final CollectionReference<Future<T>> collectionReference;
   final ErrorCallback onError;
 
   final DocumentReference<Future<T>> _doc;
   StreamSubscription? _subscription;
 
+  @override
+  T? get model => _model;
+
   T? _model;
+
+  @override
+  LoadStatus get status => _status;
+
+  LoadStatus _status = LoadStatus.notTried;
+
   final _firstLoadCompleter = Completer<void>();
 
-  FirestoreLiveByIdBloc({
+  FirestoreLiveModelLoaderById({
     required super.id,
     required this.collectionReference,
     required this.onError,
@@ -31,12 +44,14 @@ class FirestoreLiveByIdBloc<T extends WithId<String>>
     DocumentSnapshot<Future<T>> documentSnapshot,
   ) async {
     _model = await documentSnapshot.data();
+    _status = _model == null ? LoadStatus.error : LoadStatus.ok;
     _firstLoadCompleter.complete();
 
     emitStateIfChanged(
+      // ignore: deprecated_member_use
       ModelByIdState(
         model: _model,
-        status: _model == null ? LoadStatus.error : LoadStatus.ok,
+        status: _status,
       ),
     );
   }

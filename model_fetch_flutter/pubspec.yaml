@@ -1,19 +1,24 @@
 name: model_fetch_flutter
 description: Flutter widgets to build lazy load lists from model_fetch package.
-version: 0.6.0
+version: 0.6.2
 repository: https://github.com/alexeyinkin/dart-model-fetch
 
 environment:
-  sdk: '>=2.17.0 <4.0.0'
+  sdk: ^3.0.0
   flutter: ">=3.0.0"
 
 dependencies:
+  collection: ^1.17.2
   flutter: { sdk: flutter }
-  model_fetch: '>=0.5.0 <0.7.0'
+  model_editors: ^0.4.2
+  model_fetch: ^0.6.2
+  model_interfaces: ^0.3.3
   visibility_detector: '>=0.3.3 <5.0.0'
 
 dependency_overrides:
+  #model_editors: { path: '../../flutter-model-editors' }
   #model_fetch: { path: '../model_fetch' }
+  #model_interfaces: { path: '../../dart-model-interfaces' }
 
 dev_dependencies:
-  total_lints: ^3.1.0
+  total_lints: ^3.4.0

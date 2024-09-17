@@ -1,6 +1,7 @@
 import 'package:flutter/widgets.dart';
 import 'package:model_fetch/model_fetch.dart';
 
+@Deprecated('Use ListenableBuilder with asListenable()')
 class CollectionBlocBuilder<T> extends StatelessWidget {
   final CollectionBloc<T> bloc;
   final Widget Function(BuildContext context, CollectionState<T> state) builder;

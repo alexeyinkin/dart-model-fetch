@@ -1,3 +1,15 @@
+## 0.6.2
+
+* Renamed `CollectionBloc` to `ListLoader`, added a deprecated `typedef`.
+* Renamed `EmptyLazyLoadBloc` to `EmptyListLazyLoader`, added a deprecated `typedef`.
+* Renamed `IterableLazyLoadBloc` to `IterableLazyLoader`, added a deprecated `typedef`.
+* Renamed `LazyLoadBloc` to `ListLazyLoader`, added a deprecated `typedef`.
+* Renamed `ModelByFilterBloc` to `ModelLoaderByFilter`, added a deprecated `typedef`.
+* Renamed `ModelByIdBloc` to `ModelLoaderById`, added a deprecated `typedef`.
+* Renamed `FixedModelByIdBloc` to `FixedModelLoaderById`, added a deprecated `typedef`.
+* Renamed many methods in `LoaderFactory`, added deprecated forwarders.
+* Deprecated `AbstractClientFilter`.
+
 ## 0.6.1
 
 * Added `AbstractFilter.fields`.
