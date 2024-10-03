@@ -1,3 +1,7 @@
+## 0.6.3
+
+* Extracted the management of loading to `Loader` from model_fetch v0.6.3.
+
 ## 0.6.2
 
 * Handling concurrent loading attempts.

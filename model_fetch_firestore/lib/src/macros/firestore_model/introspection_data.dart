@@ -107,6 +107,7 @@ List<FilterParam> _fieldToFilterParams(FieldIntrospectionData field) {
   }
 
   switch (field.deAliasedTypeDeclaration.identifier.name) {
+    case 'bool':
     case 'String':
       return [EqualsFilterParam(name: field.name, typeDeclaration: typeDecl)];
   }

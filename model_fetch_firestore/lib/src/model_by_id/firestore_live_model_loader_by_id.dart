@@ -35,7 +35,8 @@ class FirestoreLiveModelLoaderById<T extends WithId<String>>
     required super.id,
     required this.collectionReference,
     required this.onError,
-  }) : _doc = collectionReference.doc(id) {
+  })  : assert(id.isNotEmpty, 'Model ID must not be empty'),
+        _doc = collectionReference.doc(id) {
     _subscription =
         _doc.snapshots().handleError(onError).listen(_onModelChanged);
   }

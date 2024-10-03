@@ -76,7 +76,12 @@ class FirestoreLiveSingleDocumentListLoader<T extends WithId<String>>
   }
 
   @override
-  Future<void> clear() async {
+  Future<void> loadAll() async {
+    // No-op, the document is live.
+  }
+
+  @override
+  Future<void> clearItems() async {
     // No-op, the document is live.
   }
 }
