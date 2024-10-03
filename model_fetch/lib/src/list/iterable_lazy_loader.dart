@@ -1,5 +1,4 @@
-import '../load_status.dart';
-import 'list_lazy_loader.dart';
+import 'loader.dart';
 
 @Deprecated('Renamed to IterableLazyLoader')
 typedef IterableLazyLoadBloc<T> = IterableLazyLoader<T>;
@@ -13,16 +12,7 @@ class IterableLazyLoader<T> extends ListLazyLoader<T> {
   final int pageSize;
 
   @override
-  bool get hasMore => _hasMore;
-
-  bool _hasMore = true;
-
-  @override
   final items = <T>[];
-
-  @override
-  LoadStatus get status => _loadStatus;
-  LoadStatus _loadStatus = LoadStatus.notTried;
 
   late Iterator<T> _iterator = iterable.iterator;
 
@@ -32,34 +22,28 @@ class IterableLazyLoader<T> extends ListLazyLoader<T> {
   });
 
   @override
-  Future<void> loadAllIfCan() async {
+  Future<void> loadAll() async {
     while (_iterator.moveNext()) {
       items.add(_iterator.current);
     }
-    _hasMore = false;
-    _loadStatus = LoadStatus.ok;
-    pushOutput();
   }
 
   @override
-  Future<void> loadMoreIfCan() async {
+  Future<bool> loadMore() async {
     for (int i = pageSize; --i >= 0;) {
       if (!_iterator.moveNext()) {
-        _hasMore = false;
-        break;
+        return false;
       }
 
       items.add(_iterator.current);
     }
-    _loadStatus = LoadStatus.ok;
-    pushOutput();
+
+    return true;
   }
 
   @override
-  Future<void> clear() async {
+  Future<void> clearItems() async {
     items.clear();
-    _hasMore = true;
-    _loadStatus = LoadStatus.notTried;
     _iterator = iterable.iterator;
   }
 }

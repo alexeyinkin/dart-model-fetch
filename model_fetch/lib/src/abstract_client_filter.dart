@@ -1,4 +1,4 @@
-import 'list/list_loader.dart';
+import 'list/loader.dart';
 
 // TODO(alexeyinkin): Make FilteredLoader, https://github.com/alexeyinkin/dart-model-fetch/issues/7
 @Deprecated(

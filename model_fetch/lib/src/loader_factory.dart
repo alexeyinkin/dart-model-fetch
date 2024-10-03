@@ -3,7 +3,7 @@ import 'package:model_interfaces/model_interfaces.dart';
 
 import 'abstract_filter.dart';
 import 'interfaces/async_disposable.dart';
-import 'list/list_lazy_loader.dart';
+import 'list/loader.dart';
 import 'model_by_filter/model_loader_by_filter.dart';
 import 'model_by_id/model_loader_by_id.dart';
 

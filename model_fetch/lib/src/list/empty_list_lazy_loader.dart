@@ -1,6 +1,5 @@
-import '../load_status.dart';
 import '../loader_factory.dart';
-import 'list_lazy_loader.dart';
+import 'loader.dart';
 
 @Deprecated('Renamed to EmptyListLazyLoader')
 typedef EmptyLazyLoadBloc<T> = EmptyListLazyLoader<T>;
@@ -10,31 +9,17 @@ typedef EmptyLazyLoadBloc<T> = EmptyListLazyLoader<T>;
 /// Use it in custom [LoaderFactory] classes if you don't want to throw
 /// UnimplementedError.
 class EmptyListLazyLoader<T> extends ListLazyLoader<T> {
-  bool _tried = false;
-
   @override
   List<T> get items => const [];
 
   @override
-  bool get hasMore => !_tried;
+  Future<void> loadAll() async {}
 
   @override
-  LoadStatus get status => _tried ? LoadStatus.ok : LoadStatus.notTried;
+  Future<bool> loadMore() async => false;
 
   @override
-  Future<void> loadAllIfCan() async {
-    _tried = true;
-    pushOutput();
-  }
-
-  @override
-  Future<void> loadMoreIfCan() async {
-    _tried = true;
-    pushOutput();
-  }
-
-  @override
-  Future<void> clear() async {
+  Future<void> clearItems() async {
     // No-op.
   }
 }

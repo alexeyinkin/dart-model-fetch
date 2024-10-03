@@ -1,3 +1,8 @@
+## 0.6.3
+
+* Added `Loader` as a superinterface to `ListLoader`.
+* Added `CompoundLoader`, `LoaderStreamMixin`.
+
 ## 0.6.2
 
 * Renamed `CollectionBloc` to `ListLoader`, added a deprecated `typedef`.
