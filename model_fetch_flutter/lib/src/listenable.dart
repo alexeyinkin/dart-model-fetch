@@ -7,7 +7,7 @@ import 'package:model_fetch/model_fetch.dart';
 
 final _cache = <Object, Listenable>{};
 
-extension ListLoaderListenableExtension on ListLoader {
+extension ListLoaderListenableExtension on Loader {
   Listenable asListenable() {
     return _cache[this] ?? _createAndSave();
   }

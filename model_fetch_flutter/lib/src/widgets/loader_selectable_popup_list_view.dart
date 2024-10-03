@@ -34,7 +34,7 @@ class LoaderSelectablePopUpListView<I, T extends WithIdTitle<I>>
                 onDeletePressed: () async =>
                     controller.setIdSelectedOrThrow(item.id, false),
               ),
-            MaterialButton(
+            ElevatedButton(
               onPressed: () async => _showPopUp(context),
               child: const Text('…'),
             ),

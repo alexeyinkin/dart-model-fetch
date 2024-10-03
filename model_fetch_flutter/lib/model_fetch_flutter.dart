@@ -5,6 +5,7 @@ export 'src/widgets/auto_load_more.dart';
 export 'src/widgets/collection_bloc_builder.dart';
 export 'src/widgets/lazy_load_list_view.dart';
 export 'src/widgets/list_lazy_loader_trailing.dart';
+export 'src/widgets/loader_builder.dart';
 export 'src/widgets/loader_dropdown_button.dart';
 export 'src/widgets/loader_selectable_list_view.dart';
 export 'src/widgets/loader_selectable_popup_list_view.dart';

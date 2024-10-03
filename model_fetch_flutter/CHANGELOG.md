@@ -1,3 +1,7 @@
+## 0.6.3
+
+* Added `LoaderBuilder`.
+
 ## 0.6.2
 
 * Added `.asListenable()` extension methods to `ListLoader`, `ModelLoaderByFilter`, and `ModelLoaderById`.
