@@ -1,3 +1,7 @@
+## 0.6.4
+
+* Added `LazyLoadListView.itemBuilder`, `.loadingBuilder`.
+
 ## 0.6.3
 
 * Added `LoaderBuilder`.
