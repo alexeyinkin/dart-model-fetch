@@ -1,6 +1,6 @@
 name: model_fetch_firestore
-description: A lazy load BLoC wrapper for Firestore collections.
-version: 0.6.3
+description: A lazy load wrapper for Firestore collections.
+version: 0.6.4
 repository: https://github.com/alexeyinkin/dart-model-fetch
 
 environment:
@@ -15,7 +15,7 @@ dependencies:
   macro_util: ^0.1.0-13.dev
   macros: ^0.1.0-main.5
   meta: ^1.7.0
-  model_fetch: ^0.6.3
+  model_fetch: ^0.6.4
   model_interfaces: ^0.3.0
 
 dependency_overrides:

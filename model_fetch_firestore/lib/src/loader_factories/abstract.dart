@@ -24,11 +24,6 @@ abstract class AbstractFirestoreLoaderFactory<
     SnapshotOptions? options,
   );
 
-  void onError(Object error, StackTrace trace) {
-    print('Error in $runtimeType: $error'); // ignore: avoid_print
-    print(trace); // ignore: avoid_print
-  }
-
   Future<T> fromFirestoreBase(
     DocumentSnapshot<Map<String, dynamic>> snapshot,
     SnapshotOptions? options,

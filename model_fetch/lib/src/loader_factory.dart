@@ -291,4 +291,10 @@ abstract class LoaderFactory<
     );
     map.clear();
   }
+
+  /// Prints [error] and [trace].
+  void onError(Object error, StackTrace trace) {
+    print('Error in $runtimeType: $error'); // ignore: avoid_print
+    print(trace); // ignore: avoid_print
+  }
 }

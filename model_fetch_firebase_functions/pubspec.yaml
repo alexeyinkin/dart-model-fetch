@@ -1,0 +1,18 @@
+name: model_fetch_firebase_functions
+description: A lazy load wrapper for data returned by Firebase cloud functions.
+version: 0.6.4
+repository: https://github.com/alexeyinkin/dart-model-fetch
+
+environment:
+  sdk: '>=2.17.0 <4.0.0'
+
+dependencies:
+  cloud_functions: ^5.1.3
+  model_fetch: ^0.6.4
+  model_interfaces: ^0.3.0
+
+dev_dependencies:
+  total_lints: ^3.4.0
+
+dependency_overrides:
+  #model_fetch: { path: '../model_fetch' }

@@ -1,3 +1,7 @@
+## 0.6.4
+
+* Extracted `AbstractFirestoreLoaderFactory.onError()` to `LoaderFactory` from model_fetch v0.6.4.
+
 ## 0.6.3
 
 * Extracted the management of loading to `Loader` from model_fetch v0.6.3.

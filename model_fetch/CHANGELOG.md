@@ -1,3 +1,7 @@
+## 0.6.4
+
+* Added `LoadeFactory.onError()`.
+
 ## 0.6.3
 
 * Added `Loader` as a superinterface to `ListLoader`.
