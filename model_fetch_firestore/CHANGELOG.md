@@ -1,3 +1,12 @@
+## 0.7.0
+
+* **BREAKING:** Dropped `FirestoreModel` macro.
+* **BREAKING:** `AbstractFirestoreLoaderFactory` by default creates loaders that only load from server and not from cache.
+* **BREAKING:** Require Dart 3.6+ and workspace resolution.
+* Added optional `options` to the `AbstractFirestoreLoaderFactory` constructor to override that.
+* Added optional `options` to the `FirestoreFrozenListLazyLoader` constructor.
+* Support [cloud_firestore](https://pub.dev/packages/cloud_firestore) v6.0.0+.
+
 ## 0.6.4
 
 * Extracted `AbstractFirestoreLoaderFactory.onError()` to `LoaderFactory` from model_fetch v0.6.4.

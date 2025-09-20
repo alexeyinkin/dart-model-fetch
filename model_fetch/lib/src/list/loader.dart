@@ -85,7 +85,7 @@ abstract class Loader {
 
   void _setErrorStateAndReleaseLoadingLock(Object error, StackTrace trace) {
     onError(error, trace);
-    _hasMore = false;
+    _hasMore = true;
     _status = LoadStatus.error;
     _currentCallCompleter!.completeError(error, trace);
     _currentCallCompleter = null;
@@ -127,6 +127,15 @@ abstract class Loader {
   }
 
   Future<void> clearItems();
+
+  Future<void> retryAll() async {
+    if (_status != LoadStatus.error) {
+      return;
+    }
+
+    _hasMore = true;
+    return loadAllIfCan();
+  }
 }
 
 /// A local representation of a possibly larger list.
@@ -234,6 +243,15 @@ abstract class ListLazyLoader<T> extends ListLoader<T> {
   Future<void> backgroundReloadFirstPage() async {
     await clear(shouldNotifyListeners: false);
     await loadMoreIfCan(shouldNotifyListenersOnStart: false);
+  }
+
+  Future<void> retryMore() async {
+    if (_status != LoadStatus.error) {
+      return;
+    }
+
+    _hasMore = true;
+    return loadMoreIfCan();
   }
 }
 

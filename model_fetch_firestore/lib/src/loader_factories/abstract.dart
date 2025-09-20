@@ -17,6 +17,10 @@ abstract class AbstractFirestoreLoaderFactory<
     F
 //
     > {
+  final GetOptions? options;
+
+  AbstractFirestoreLoaderFactory({this.options});
+
   QueryBuilder<T, F> createQueryBuilder(F filter);
 
   Future<T> fromFirestore(
@@ -91,6 +95,7 @@ abstract class AbstractFirestoreLoaderFactory<
       onError: onError,
       pageSize: filter.pageSize,
       query: createQueryBuilder(filter).query,
+      options: options,
     );
   }
 

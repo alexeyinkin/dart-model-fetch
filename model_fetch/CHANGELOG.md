@@ -1,3 +1,9 @@
+## 0.7.0
+
+* **BREAKING:** Error state now has `hasMore == false`.
+* **BREAKING:** Require Dart 3.6+ and workspace resolution.
+* Added `Loader.retryAll()`, `LazyListLoader.retryMoreIfCan()`.
+
 ## 0.6.4
 
 * Added `LoadeFactory.onError()`.

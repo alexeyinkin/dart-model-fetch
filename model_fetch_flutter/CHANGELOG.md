@@ -1,3 +1,10 @@
+## 0.7.0
+
+* **BREAKING:** `ListLazyLoaderTrailingWidget` now only accepts `ListLazyLoader` (was `ListLoader`).
+* **BREAKING:** `ListLazyLoaderTrailingWidget` shows `RetryButton` on error by default (was `SizedBox` of 1x1).
+* **BREAKING:** Require Dart 3.6+ and workspace resolution.
+* Added `RetryButton`.
+
 ## 0.6.4
 
 * Added `LazyLoadListView.itemBuilder`, `.loadingBuilder`.

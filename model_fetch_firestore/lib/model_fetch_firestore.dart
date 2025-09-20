@@ -3,7 +3,6 @@ export 'src/list/firestore_frozen_list_lazy_loader.dart';
 export 'src/list/firestore_list_lazy_loader.dart';
 export 'src/list/firestore_live_single_document_list_loader.dart';
 export 'src/loader_factories/abstract.dart';
-export 'src/macros/firestore_model/firestore_model.dart';
 export 'src/model_by_filter/firestore_live_model_loader_by_filter.dart';
 export 'src/model_by_id/firestore_live_model_loader_by_id.dart';
 export 'src/query_builder.dart';

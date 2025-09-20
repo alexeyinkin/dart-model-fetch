@@ -1,10 +1,12 @@
 name: model_fetch
 description: A lazy load wrapper for your data source.
-version: 0.6.4
+version: 0.7.0
 repository: https://github.com/alexeyinkin/dart-model-fetch
 
 environment:
-  sdk: '>=2.17.0 <4.0.0'
+  sdk: ^3.6.0
+
+resolution: workspace
 
 dependencies:
   meta: ^1.7.0

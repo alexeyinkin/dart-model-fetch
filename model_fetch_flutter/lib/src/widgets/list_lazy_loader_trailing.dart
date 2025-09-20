@@ -3,12 +3,13 @@ import 'package:model_fetch/model_fetch.dart';
 
 import '../listenable.dart';
 import 'collection_bloc_builder.dart';
+import 'retry_button.dart';
 
 /// Calls a specific builder based on the [loader]'s loading status.
 ///
 /// If any of the builders is omitted, a SizedBox of 1x1 is used.
 class ListLazyLoaderTrailingWidget extends StatelessWidget {
-  final ListLoader loader;
+  final ListLazyLoader loader;
 
   /// Called if the [loader] is currently loading or not loading but has more.
   final WidgetBuilder? loadingBuilder;
@@ -35,7 +36,7 @@ class ListLazyLoaderTrailingWidget extends StatelessWidget {
       builder: (context, _) {
         switch (loader.status) {
           case LoadStatus.error:
-            return (errorBuilder ?? _defaultBuilder)(context);
+            return (errorBuilder ?? _defaultErrorBuilder)(context);
 
           case LoadStatus.notTried:
           case LoadStatus.loading:
@@ -52,6 +53,10 @@ class ListLazyLoaderTrailingWidget extends StatelessWidget {
 
   Widget _defaultBuilder(BuildContext context) {
     return const SizedBox(width: 1, height: 1);
+  }
+
+  Widget _defaultErrorBuilder(BuildContext context) {
+    return Center(child: RetryButton(onPressed: loader.retryMore));
   }
 }
 

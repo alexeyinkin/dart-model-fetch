@@ -8,6 +8,7 @@ import 'firestore_list_lazy_loader.dart';
 typedef FirestoreFrozenLazyLoadBloc<T> = FirestoreFrozenListLazyLoader<T>;
 
 class FirestoreFrozenListLazyLoader<T> extends FirestoreListLazyLoader<T> {
+  final GetOptions? options;
   final int pageSize;
 
   @override
@@ -19,6 +20,7 @@ class FirestoreFrozenListLazyLoader<T> extends FirestoreListLazyLoader<T> {
     super.clientFilters,
     super.onError,
     super.totalLimit,
+    this.options,
   });
 
   @override
@@ -29,7 +31,7 @@ class FirestoreFrozenListLazyLoader<T> extends FirestoreListLazyLoader<T> {
 
   @override
   Future<bool> loadMore() async {
-    final snapshot = await getStartAtQuery().limit(pageSize).get();
+    final snapshot = await getStartAtQuery().limit(pageSize).get(options);
     await _addQuerySnapshotToList(snapshot);
     setLastDocument(snapshot.docs.lastOrNull);
 
