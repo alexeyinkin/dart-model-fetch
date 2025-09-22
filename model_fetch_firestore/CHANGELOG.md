@@ -1,3 +1,7 @@
+## 0.7.1
+
+* Fix: Loaders from `FirestoreFrozenListLazyLoader.loadAll()` obeys the same `options` as `.loadMore()`.
+
 ## 0.7.0
 
 * **BREAKING:** Dropped `FirestoreModel` macro.

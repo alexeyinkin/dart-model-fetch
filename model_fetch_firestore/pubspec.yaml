@@ -1,6 +1,6 @@
 name: model_fetch_firestore
 description: A lazy load wrapper for Firestore collections.
-version: 0.7.0
+version: 0.7.1
 repository: https://github.com/alexeyinkin/dart-model-fetch
 
 environment:

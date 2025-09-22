@@ -25,7 +25,7 @@ class FirestoreFrozenListLazyLoader<T> extends FirestoreListLazyLoader<T> {
 
   @override
   Future<void> loadAll() async {
-    final snapshot = await getStartAtQuery().get();
+    final snapshot = await getStartAtQuery().get(options);
     await _addQuerySnapshotToList(snapshot);
   }
 
